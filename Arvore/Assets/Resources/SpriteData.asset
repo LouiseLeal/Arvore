@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b24ae52a9facc4c5cbabf34b759654e0, type: 3}
   m_Name: SpriteData
   m_EditorClassIdentifier: 
-  SnakeHead: {fileID: 0}
-  SnakeBody: {fileID: 0}
-  SnakeTail: {fileID: 0}
-  MapTile: {fileID: 0}
-  MapWall: {fileID: 0}
+  SnakeHead: {fileID: 21300000, guid: a3b0c52ce25fe47c9a9081ed6524a62d, type: 3}
+  SnakeBody: {fileID: 21300000, guid: 8c9236676ecd943d38b701748bf046ff, type: 3}
+  SnakeTail: {fileID: 21300000, guid: fa0d581dc3f2540b8905352c4156f0a1, type: 3}
+  MapTile: {fileID: 21300000, guid: 67e03c60935054280aee9c91e31ec7c1, type: 3}
+  MapWall: {fileID: 21300000, guid: 453d36e765d2f4c94ba29d8451bd56af, type: 3}

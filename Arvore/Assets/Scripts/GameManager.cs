@@ -1,14 +1,17 @@
 ﻿
+using System;
 using UnityEngine;
 
 namespace Snake
 {
 
-    public class GameManager : MonoBehaviour
+    public class GameManager : Singleton<GameManager>
     {
-        [SerializeField] GameData gameData;
+        [SerializeField] private GameData gameData;
         [SerializeField] private GameObject MapTilePrefab;
         [SerializeField] private Transform ArenaContainer;
+
+        [SerializeField] private Snake snake;
 
 
         ArenaTile[,] arena;
@@ -24,34 +27,48 @@ namespace Snake
 
         private void Start()
         {
-            CreateArena();
-
+            //Todo create an method to calculate it
+            var tileSize = new Vector2(50, 50); 
+            CreateArena(tileSize);
+            snake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize);
         }
 
-        private void CreateArena()
+        private void CreateArena(Vector2 tileSize)
         {
+            //set variables before for the avoid garbage collection 
             GameObject newGameObject;
             ArenaTile newTile;
+            Vector2 newCanvasPosition = Vector2.zero;
 
-            //Todo put it on game config
-            Vector2 sizeDelta = new Vector2(50 , 50);
-
-            for (int i = 0; i < gameData.arenaWidth; i++)
+            for (int y = 0; y < gameData.arenaHeight; y++)
             {
-                for (int j = 0; j < gameData.arenaHeight; j++)
+                for (int x = 0; x < gameData.arenaWidth; x++)
                 {
                     newGameObject = Instantiate(MapTilePrefab, ArenaContainer) as GameObject;
-                    newTile = newGameObject.GetComponent<ArenaTile>();
-                    newTile.rectTransform.sizeDelta = sizeDelta;
-                    newTile.rectTransform.anchoredPosition = new Vector2((sizeDelta.x * i), (sizeDelta.y * j));
 
-                    if (i == 0 || i == gameData.arenaWidth - 1 || j == 0 || j == gameData.arenaHeight - 1)
+                    //Todo use string builder
+                    newGameObject.name = "arena " + x + " " + y;
+
+                    newTile = newGameObject.GetComponent<ArenaTile>();
+                    newTile.SetTileSize (tileSize);
+
+                    newCanvasPosition.x = tileSize.x * x;
+                    newCanvasPosition.y = -tileSize.y * y;
+                    newTile.SetCanvasPosiiton(newCanvasPosition);
+
+                    if (y == 0 || y == gameData.arenaHeight - 1 || x == 0 || x == gameData.arenaWidth - 1)
                         newTile.SetWall();
 
-                    arena[i, j] = newTile;
+                    arena[x, y] = newTile;
                 }
             }
         }
+
+        public Vector2 GetCanvasPosition(int x,int y)
+        {
+            return arena[x, y].GetCanvasPosition();
+        }
+
     }
 
 

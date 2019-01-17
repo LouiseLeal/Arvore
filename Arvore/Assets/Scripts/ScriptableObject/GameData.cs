@@ -19,6 +19,9 @@ public class GameData : ScriptableObject
     public int arenaHeight = 10;
     public int arenaWidth = 10;
 
+    [Header("Snake parameters")]
+    public int initialSnakeSize = 3;
+
     //Todo ainda não entendi como isso funciona
     //[Header("Preset parameters")]
 

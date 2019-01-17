@@ -1,17 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Snake
 {
   
-    public class ArenaTile : MonoBehaviour
+    public class ArenaTile : Tile
     {
-        [SerializeField] SpriteData spriteData;
-
-        [SerializeField] Image image;
-        [SerializeField] public RectTransform rectTransform;
-
-
         bool isWall = false;
 
         private void Awake()
@@ -28,5 +23,14 @@ namespace Snake
 
         }
 
+        public Vector2 GetCanvasPosition()
+        {
+            return rectTransform.anchoredPosition;
+        }
+
+        public void SetCanvasPosiiton(Vector2 position)
+        {
+            rectTransform.anchoredPosition = position;
+        }
     }
 }
