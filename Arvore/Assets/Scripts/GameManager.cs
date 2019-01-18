@@ -7,7 +7,7 @@ namespace Snake
 
     public class GameManager : Singleton<GameManager>
     {
-        [SerializeField] private GameData gameData;
+        [SerializeField] public GameData gameData;
         [SerializeField] private GameObject MapTilePrefab;
         [SerializeField] private Transform ArenaContainer;
 
@@ -28,11 +28,15 @@ namespace Snake
         private void Start()
         {
             //Todo create an method to calculate it
-            var tileSize = new Vector2(50, 50); 
+            var tileSize = new Vector2(gameData.TileSize, gameData.TileSize); 
+
             CreateArena(tileSize);
-            snake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize);
+
+            snake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
         }
 
+
+        //Create arena programaticaly 
         private void CreateArena(Vector2 tileSize)
         {
             //set variables before for the avoid garbage collection 
@@ -56,6 +60,7 @@ namespace Snake
                     newCanvasPosition.y = -tileSize.y * y;
                     newTile.SetCanvasPosiiton(newCanvasPosition);
 
+                    //If the tile is on board, the tile will be an wall
                     if (y == 0 || y == gameData.arenaHeight - 1 || x == 0 || x == gameData.arenaWidth - 1)
                         newTile.SetWall();
 

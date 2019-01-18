@@ -16,11 +16,13 @@ public class GameData : ScriptableObject
     public float RangeConnon = 1f;
 
     [Header("Game parameters")]
+    public int TileSize = 20;
     public int arenaHeight = 10;
     public int arenaWidth = 10;
 
     [Header("Snake parameters")]
     public int initialSnakeSize = 3;
+    public float snakeSpeed = 1;
 
     //Todo ainda não entendi como isso funciona
     //[Header("Preset parameters")]
