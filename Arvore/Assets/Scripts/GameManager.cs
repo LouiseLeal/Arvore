@@ -49,7 +49,7 @@ namespace Snake
             CreateArena();
 
             SetBlock();
-            //.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
+            snake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
         }
         #endregion
 
@@ -141,6 +141,12 @@ namespace Snake
         #endregion
 
 
+        public void  SetArenaTileState(int x, int y, ArenaTileState arenaTileState)
+        {
+            arena[x, y].ChangeArenaTileState(arenaTileState);
+        }
+
+
         #region GameOver
         public void GameOver()
         {
@@ -162,5 +168,6 @@ namespace Snake
 
     #endregion
 
+        
 
 }

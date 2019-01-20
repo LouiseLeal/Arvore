@@ -21,7 +21,7 @@ namespace Snake
 
         private void Update()
         {
-            if (snake != null)
+            if (snake == null)
                 return;
 
             if (canCheckInput )  
@@ -97,7 +97,12 @@ namespace Snake
 
         void Move()
         {
-            for (int i = currentSize - 1; i > 0; i--)
+
+            var lastSnakePart = currentSize - 1;
+
+            GameManager.Instance.SetArenaTileState(snake[lastSnakePart].x, snake[lastSnakePart].y, ArenaTileState.EMPTY);
+
+            for (int i = lastSnakePart; i > 0; i--)
             {
                 snake[i].CopyValue(snake[i - 1]);
             }
@@ -121,7 +126,7 @@ namespace Snake
                     break;
             }
 
-
+            GameManager.Instance.SetArenaTileState(snake[0].x, snake[0].y, ArenaTileState.SNAKE);
         }
 
 
