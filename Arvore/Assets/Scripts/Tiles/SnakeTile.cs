@@ -68,7 +68,7 @@ namespace Snake
                 x == GameManager.Instance.gameData.arenaWidth-1 ||
                 y == GameManager.Instance.gameData.arenaHeight-1)
             {
-                Debug.Log("Reach wall");
+                GameManager.Instance.GameOver();
                 return;
             }
 

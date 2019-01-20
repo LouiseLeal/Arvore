@@ -21,7 +21,10 @@ namespace Snake
 
         private void Update()
         {
-            if (canCheckInput) 
+            if (snake != null)
+                return;
+
+            if (canCheckInput )  
             {
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
@@ -54,6 +57,8 @@ namespace Snake
 
         public void CreateSnake(int initialTileSize, int arenaHeight, Vector2 TileSize, float speed)
         {
+            snake = new List<SnakeTile>();
+
             this.speed = speed;
             nextMoveTime = speed;
 
