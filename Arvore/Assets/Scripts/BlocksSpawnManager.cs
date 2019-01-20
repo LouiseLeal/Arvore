@@ -39,7 +39,7 @@ namespace Snake
             {
                 newBlock = Instantiate(blockPrefab, BlocksContainer).GetComponent<Block>();
                 newBlock.SetBlockSize(tileSize);
-                newBlock.SetBlcok(BlockType.INACTIVE, Vector2.zero);
+                newBlock.SetBlock(BlockType.INACTIVE, Vector2.zero);
                 blocks[i] = newBlock;
 
             }
@@ -56,8 +56,11 @@ namespace Snake
             this.redChance = redChance / totalChance;
         }
 
-        public void EnableBlock(Vector2 position)
+        public Block EnableBlock(Vector2 position)
         {
+            if (blocks == null || blocks.Length < 0) return null;
+
+
             Debug.Log("positin" + position);
             float random = Random.Range(0, 1);
             var theshold = grayChance;
@@ -70,47 +73,49 @@ namespace Snake
                 if(blocks[i].type == BlockType.INACTIVE)
                 {
                     activeBlock = blocks[i];
-                    continue;
+                    break;
                 }
             }
 
             if(activeBlock == null)
             {
                 Debug.Log("activeBlock not found");
-                return;
+                return null;
             }
 
             if (random <= theshold)
             {
-                activeBlock.SetBlcok(BlockType.GRAY, position);
-                return;
+                activeBlock.SetBlock(BlockType.GRAY, position);
+                return activeBlock; 
             }
 
             theshold += blueChance;
             if (random <= theshold)
             {
-                activeBlock.SetBlcok(BlockType.BLUE, position);
-                return;
-            }
+                activeBlock.SetBlock(BlockType.BLUE, position);
+                return activeBlock;
+            } 
 
             theshold += greenChance;
             if (random <= theshold)
             {
-                activeBlock.SetBlcok(BlockType.GREEN, position);
-                return;
+                activeBlock.SetBlock(BlockType.GREEN, position);
+                return activeBlock;
             }
 
             theshold += redChance;
             if (random <= theshold)
             {
-                activeBlock.SetBlcok(BlockType.RED, position);
-                return;
+                activeBlock.SetBlock(BlockType.RED, position);
+                return activeBlock;
             }
+
+            return null;
         }
     
         public void DesableBlock(Block block)
         {
-            block.SetBlcok(BlockType.INACTIVE, Vector2.zero);
+            block.SetBlock(BlockType.INACTIVE, Vector2.zero);
         }
     }
 }

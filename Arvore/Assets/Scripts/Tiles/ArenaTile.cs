@@ -9,16 +9,16 @@ namespace Snake
         EMPTY,
         WALL,
         SNAKE,
-        BLOCK_GREEN,
-        BLOCK_BLUE,
-        BLOCK_GRAY,
-        BLOCK_RED,
+        BLOCK
 
     }
 
     public class ArenaTile : Tile
     {
         ArenaTileState arenaTileState;
+
+        //Store reference;
+        public Block block;
 
         private void Awake()
         {
@@ -29,7 +29,7 @@ namespace Snake
         {
             arenaTileState = ArenaTileState.WALL;
             image.sprite = spriteData.MapWall;
-            gameObject.AddComponent<Collider2D>();
+            //gameObject.AddComponent<Collider2D>();
             //Todo set size if needed
 
         }
@@ -40,9 +40,18 @@ namespace Snake
 
         public ArenaTileState GetArenaTileState() => arenaTileState;
 
-        public void ChangeArenaTileState(ArenaTileState state) {
-            if (state != ArenaTileState.WALL)
-                arenaTileState = state;
+        public void ChangeArenaTileState(ArenaTileState state, Block block = null) {
+            if (state == ArenaTileState.WALL) return;
+
+            arenaTileState = state;
+            if (block != null)
+            {
+                this.block = block;
+            }
+            else
+            {
+                block = null;
+            }
         }
     }
 }

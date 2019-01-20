@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Snake
 {
@@ -41,13 +42,12 @@ namespace Snake
 
             BlocksManager.CreateBlockPool(5, tileSize);
 
+            CreateArena();
 
         }
 
         private void Start()
         {
-            CreateArena();
-
             SetBlock();
             snake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
         }
@@ -96,12 +96,20 @@ namespace Snake
         //Todo find a better way
         private void SetBlock()
         {
-            int randomX = Random.Range(1, gameData.arenaWidth - 2);
-            int randomY = Random.Range(1, gameData.arenaHeight - 2);
+
+            int randomX = UnityEngine.Random.Range(1, gameData.arenaWidth - 2);
+            int randomY = UnityEngine.Random.Range(1, gameData.arenaHeight - 2);
 
             if (arena[randomX, randomY].GetArenaTileState() == ArenaTileState.EMPTY)
             {
-                BlocksManager.EnableBlock(arena[randomX, randomY].GetCanvasPosition());
+               
+                Block block = BlocksManager.EnableBlock(arena[randomX,
+                                              randomY].GetCanvasPosition());
+                if (block == null)
+                    return;
+
+                arena[randomX, randomY].
+                       ChangeArenaTileState(ArenaTileState.BLOCK, block);
                 return;
             }
 
@@ -115,7 +123,13 @@ namespace Snake
                     newRandomY = y;
                     if (arena[newRandomX, newRandomY].GetArenaTileState() == ArenaTileState.EMPTY)
                     {
-                        BlocksManager.EnableBlock(arena[newRandomX, newRandomY].GetCanvasPosition());
+                       
+                        var block = BlocksManager.EnableBlock(arena[newRandomX, 
+                                                newRandomY].GetCanvasPosition());
+
+                        arena[newRandomX, newRandomY].
+                               ChangeArenaTileState(ArenaTileState.BLOCK,block);
+
                         return;
                     }
                 }
@@ -129,7 +143,11 @@ namespace Snake
                     newRandomY = y;
                     if (arena[newRandomX, newRandomY].GetArenaTileState() == ArenaTileState.EMPTY)
                     {
-                        BlocksManager.EnableBlock(arena[newRandomX, newRandomY].GetCanvasPosition());
+                        var block = BlocksManager.EnableBlock(arena[newRandomX,
+                                               newRandomY].GetCanvasPosition());
+
+                        arena[newRandomX, newRandomY].
+                               ChangeArenaTileState(ArenaTileState.BLOCK, block);
                         return;
                     }
                 }
@@ -137,8 +155,25 @@ namespace Snake
 
             Debug.Log("No empty spaces");
         }
-
         #endregion
+
+
+        public ArenaTileState CheckTileForSnake(int x, int y)
+        {
+            var result = arena[x, y].GetArenaTileState();
+
+//            Debug.Log(result.ToString());
+
+            arena[x, y].ChangeArenaTileState(ArenaTileState.SNAKE);
+
+            if (result == ArenaTileState.BLOCK)
+            {
+                BlocksManager.DesableBlock(arena[x,y].block);
+                SetBlock();
+            }
+
+            return result;
+        }
 
 
         public void  SetArenaTileState(int x, int y, ArenaTileState arenaTileState)

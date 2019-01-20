@@ -19,6 +19,9 @@ namespace Snake
 
         SnakeDirection currentDirection;
 
+        int Blockseaten = 0;
+
+
         private void Update()
         {
             if (snake == null)
@@ -57,6 +60,16 @@ namespace Snake
 
         public void CreateSnake(int initialTileSize, int arenaHeight, Vector2 TileSize, float speed)
         {
+
+            //TODO do it in a more efficiente
+            if(snake.Count != 0)
+            {
+                for (int i = 0; i < snake.Count; i++)
+                {
+                    Destroy(snake[i].gameObject);
+                }
+            }
+
             snake = new List<SnakeTile>();
 
             this.speed = speed;
@@ -125,8 +138,17 @@ namespace Snake
                     snake[0].SetPosition(snake[0].x - 1, snake[0].y);
                     break;
             }
+            //Check if the current tile has something;
+            ArenaTileState checkResult = GameManager.Instance.CheckTileForSnake(snake[0].x, snake[0].y);
 
-            GameManager.Instance.SetArenaTileState(snake[0].x, snake[0].y, ArenaTileState.SNAKE);
+            if (checkResult == ArenaTileState.BLOCK)
+            {
+                //TODO Give power;
+                Blockseaten++;
+                Debug.Log("eat " + Blockseaten);
+            }
+
+
         }
 
 
@@ -149,7 +171,7 @@ namespace Snake
 
             }
 
-            Debug.Log("Rotate " + currentDirection);
+            //Debug.Log("Rotate " + currentDirection);
         }
     }
 

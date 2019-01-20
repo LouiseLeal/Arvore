@@ -17,7 +17,7 @@ namespace Snake
             rectTransform.sizeDelta = tileSize;
         }
 
-        public void SetBlcok(BlockType type, Vector2 position)
+        public void SetBlock(BlockType type, Vector2 position)
         {
             if (type == BlockType.INACTIVE)
                 image.enabled = false;
@@ -46,6 +46,7 @@ namespace Snake
                     break;
             }
         }
+        
     }
 
 }
