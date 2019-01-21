@@ -6,8 +6,8 @@ namespace Snake
 
     public struct Posiiton
     {
-        int x;
-        int y;
+        public int x;
+        public int y;
 
     }
 
@@ -22,7 +22,7 @@ namespace Snake
 
         ArenaTile[,] arena;
 
-        Vector2 tileSize;
+        public Vector2 tileSize;
 
 
         #region UnityMethods
@@ -94,7 +94,7 @@ namespace Snake
         }
 
         //Todo find a better way
-        private void SetBlock()
+        private BlockType SetBlock()
         {
 
             int randomX = UnityEngine.Random.Range(1, gameData.arenaWidth - 2);
@@ -106,11 +106,12 @@ namespace Snake
                 Block block = BlocksManager.EnableBlock(arena[randomX,
                                               randomY].GetCanvasPosition());
                 if (block == null)
-                    return;
+                    return BlockType.INACTIVE;
 
                 arena[randomX, randomY].
                        ChangeArenaTileState(ArenaTileState.BLOCK, block);
-                return;
+
+                return block.type;
             }
 
             var newRandomX = randomX + 1;
@@ -130,7 +131,7 @@ namespace Snake
                         arena[newRandomX, newRandomY].
                                ChangeArenaTileState(ArenaTileState.BLOCK,block);
 
-                        return;
+                        return block.type;
                     }
                 }
             }
@@ -148,28 +149,28 @@ namespace Snake
 
                         arena[newRandomX, newRandomY].
                                ChangeArenaTileState(ArenaTileState.BLOCK, block);
-                        return;
+                        return block.type;
                     }
                 }
             }
 
             Debug.Log("No empty spaces");
+            return BlockType.INACTIVE;
         }
         #endregion
 
 
-        public ArenaTileState CheckTileForSnake(int x, int y)
+        public ArenaTileState CheckTileForSnake(int x, int y, out BlockType blockType)
         {
+            blockType = BlockType.INACTIVE;
             var result = arena[x, y].GetArenaTileState();
-
-//            Debug.Log(result.ToString());
 
             arena[x, y].ChangeArenaTileState(ArenaTileState.SNAKE);
 
             if (result == ArenaTileState.BLOCK)
             {
                 BlocksManager.DesableBlock(arena[x,y].block);
-                SetBlock();
+                blockType =  SetBlock();
             }
 
             return result;

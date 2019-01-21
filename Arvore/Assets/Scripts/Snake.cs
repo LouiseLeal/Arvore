@@ -21,6 +21,8 @@ namespace Snake
 
         int Blockseaten = 0;
 
+        Posiiton snakeLastTileInfo;
+
 
         private void Update()
         {
@@ -52,6 +54,7 @@ namespace Snake
             if (nextMoveTime < 0)
             {
                 Move();
+                CheckForBlock();
                 nextMoveTime = speed;
                 canCheckInput = true;
             }
@@ -110,16 +113,6 @@ namespace Snake
 
         void Move()
         {
-
-            var lastSnakePart = currentSize - 1;
-
-            GameManager.Instance.SetArenaTileState(snake[lastSnakePart].x, snake[lastSnakePart].y, ArenaTileState.EMPTY);
-
-            for (int i = lastSnakePart; i > 0; i--)
-            {
-                snake[i].CopyValue(snake[i - 1]);
-            }
-
             if (currentDirection != snake[0].currentDirection)
                 snake[0].SetRotation(currentDirection);
 
@@ -139,18 +132,55 @@ namespace Snake
                     break;
             }
             //Check if the current tile has something;
-            ArenaTileState checkResult = GameManager.Instance.CheckTileForSnake(snake[0].x, snake[0].y);
 
-            if (checkResult == ArenaTileState.BLOCK)
+            var lastSnakePart = currentSize - 1;
+
+            //Todo see this
+            //Storege last position for use it on gayr effect block
+            snakeLastTileInfo.x = snake[lastSnakePart].x;
+            snakeLastTileInfo.y = snake[lastSnakePart].y;
+
+            GameManager.Instance.SetArenaTileState(snake[lastSnakePart].x, 
+                                    snake[lastSnakePart].y, ArenaTileState.EMPTY);
+
+
+            for (int i = lastSnakePart; i > 0; i--)
             {
-                //TODO Give power;
-                Blockseaten++;
-                Debug.Log("eat " + Blockseaten);
+                snake[i].CopyValue(snake[i-1]);
             }
-
 
         }
 
+        void CheckForBlock()
+        {
+            ArenaTileState checkResult = GameManager.Instance.CheckTileForSnake
+                            (snake[0].x, snake[0].y, out BlockType blockType);
+
+            if (checkResult == ArenaTileState.BLOCK)
+            {
+
+                Blockseaten++;
+                Debug.Log("eat " + Blockseaten);
+
+                switch (blockType)
+                {
+                    case BlockType.INACTIVE:
+                        Debug.Log("ERROR");
+                        break;
+                    case BlockType.GRAY:
+                        GrayEffect();
+                        break;
+                    case BlockType.BLUE:
+                        break;
+                    case BlockType.GREEN:
+                        break;
+                    case BlockType.RED:
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
 
         void Rotate(bool clockwise)
         {
@@ -173,6 +203,22 @@ namespace Snake
 
             //Debug.Log("Rotate " + currentDirection);
         }
-    }
 
+
+        //Enlarge Snake by one tile
+        void GrayEffect()
+        {
+            Debug.Log("Gray effect");
+            currentSize++;
+
+            Vector2 position = new Vector2(snakeLastTileInfo.x, snakeLastTileInfo.y);
+
+
+            var newSnakeTile = Instantiate(snakeTilePrefab, this.transform).
+                                                    GetComponent<SnakeTile>();
+            newSnakeTile.SetSnake(position, GameManager.Instance.tileSize, false);
+
+            snake.Add(newSnakeTile);
+        }
+    }
 }

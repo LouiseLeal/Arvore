@@ -61,7 +61,7 @@ namespace Snake
             if (blocks == null || blocks.Length < 0) return null;
 
 
-            Debug.Log("positin" + position);
+            //Debug.Log("positin" + position);
             float random = Random.Range(0, 1);
             var theshold = grayChance;
             Debug.Log(random);

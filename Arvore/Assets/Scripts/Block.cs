@@ -46,7 +46,9 @@ namespace Snake
                     break;
             }
         }
-        
+
+        public BlockType GetBlockType() => type;
+
     }
 
 }

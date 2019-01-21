@@ -86,5 +86,11 @@ namespace Snake
 
             SetPosition(snakeTile.x, snakeTile.y);
         }
+
+        //ToDO refactor to use struct position
+        public Vector2 GetPosition()
+        {
+            return new Vector2(x,y);
+        }
     }
 }
