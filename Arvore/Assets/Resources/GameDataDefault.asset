@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: GameDataDefault
   m_EditorClassIdentifier: 
   grayBlock: 0.5
-  greenBlock: 0.5
+  greenBlock: 0
   redBlock: 0
-  blueBlock: 0
+  blueBlock: 0.5
   SpeedIncrease: 0.02
   RangeConnon: 1
   TileSize: 20

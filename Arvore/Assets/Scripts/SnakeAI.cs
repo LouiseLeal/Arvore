@@ -12,12 +12,14 @@ namespace Snake {
         {
             nextMoveTime -= Time.deltaTime;
 
+            //TODO change it to a function
             if (nextMoveTime < 0)
             {
                 Move();
                 CheckForBlock();
                 nextMoveTime = inverseSpeed;
                 canCheckInput = true;
+                StoreLastMoviment();
             }
         }
 
@@ -51,96 +53,6 @@ namespace Snake {
 
                 }
             }
-
-//            Debug.Log("CurrentDirection " + currentDirection);
-
-            //if (targetPosition.x - position.x < 0)
-            //{
-            //    if (currentDirection != SnakeDirection.LEFT)
-            //    {
-            //        if (currentDirection == SnakeDirection.UP ||
-            //                            currentDirection == SnakeDirection.DOWN)
-            //        {
-            //            currentDirection = SnakeDirection.LEFT;
-            //            return;
-            //        }
-
-            //       currentDirection = TurnVerticaly(position);
-
-            //    }
-            //    else if (GameManager.Instance.IsEmptyArenaTile(position.x + 1, position.y))
-            //    {
-            //        //Continue in the same direction
-            //        return;
-            //    }
-
-            //}
-            //else if (targetPosition.x - position.x > 0)
-            //{
-            //    if (currentDirection != SnakeDirection.RIGHT)
-            //    {
-            //        if (currentDirection == SnakeDirection.UP ||
-            //                           currentDirection == SnakeDirection.DOWN)
-            //        {
-            //            currentDirection = SnakeDirection.RIGHT;
-            //        }
-
-            //        currentDirection = TurnVerticaly(position);
-            //    }
-            //    else if (GameManager.Instance.IsEmptyArenaTile(position.x - 1, position.y))
-            //    {
-            //        //Continue in the same direction
-            //        return;
-            //    }
-            //}
-            //else 
-            //{ 
-            ////Only consider going y values if x values give the invalid direction
-            // if (targetPosition.y - position.y > 0)
-            //    {
-            //        if (currentDirection != SnakeDirection.DOWN)
-            //        {
-            //            if (currentDirection == SnakeDirection.RIGHT ||
-            //                              currentDirection == SnakeDirection.LEFT)
-            //            {
-            //                currentDirection = SnakeDirection.DOWN;
-            //            }
-
-            //            currentDirection = TurnHorizontaly(position);
-            //        }
-            //        else if (GameManager.Instance.IsEmptyArenaTile(position.x, position.y + 1))
-            //        {
-            //            //Continue in the same direction
-            //            return;
-            //        }
-            //    }
-            //    //Only consider going y values if x values give the invalid direction
-            //    else if ( targetPosition.y - position.y < 0)
-            //    {
-            //        if (currentDirection != SnakeDirection.UP)
-            //        {
-            //            if (currentDirection == SnakeDirection.RIGHT ||
-            //                              currentDirection == SnakeDirection.LEFT)
-            //            {
-            //                currentDirection = SnakeDirection.UP;
-            //            }
-
-            //            currentDirection = TurnHorizontaly(position);
-            //        }
-
-            //        else if (GameManager.Instance.IsEmptyArenaTile(position.x, position.y - 1))
-            //        {
-            //            //Continue in the same direction
-            //            return;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        //The snakes head is on top of target this will be 
-            //        //dealed with in follow methods;
-            //        return;
-            //    }
-            //}
         }
 
 

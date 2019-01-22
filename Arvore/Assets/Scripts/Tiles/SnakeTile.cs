@@ -65,6 +65,7 @@ namespace Snake
 
         public void SetPosition(int x, int y)
         {
+            //Debug.Log("name" + name);
             if(x == 0 || y == 0 || 
                 x == GameManager.Instance.gameData.arenaWidth-1 ||
                 y == GameManager.Instance.gameData.arenaHeight-1)
@@ -92,6 +93,15 @@ namespace Snake
         public Vector2 GetPosition()
         {
             return new Vector2(x,y);
+        }
+
+        //TODO refactore
+        public Position GetPosition(int none)
+        {
+            Position position;
+            position.x = x;
+            position.y = y;
+            return position;
         }
     }
 }

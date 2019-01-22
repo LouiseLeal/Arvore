@@ -224,13 +224,22 @@ namespace Snake
             blockType = BlockType.INACTIVE;
             var result = arena[x, y].GetArenaTileState();
 
-            arena[x, y].ChangeArenaTileState(ArenaTileState.SNAKE);
-
             if (result == ArenaTileState.BLOCK)
             {
+                //TOdo use only the block tyoe
+                blockType = arena[x, y].block.type;
+
+                //Desable eaten block
                 BlocksManager.DesableBlock(arena[x,y].block);
-                blockType =  SetBlock();
+                //Enable a new block
+                SetBlock();
+
+                arena[x, y].ChangeArenaTileState(ArenaTileState.SNAKE);
             }
+
+            arena[x, y].ChangeArenaTileState(ArenaTileState.SNAKE);
+
+           
 
             return result;
         }
@@ -245,6 +254,14 @@ namespace Snake
         public Position GetNearBlockPosition(Position position )
         {
             return BlocksManager.GetNearBlock(position);
+        }
+
+        public void ReturnTime()
+        {
+            for (int i = 0; i < snakes.Count; i++)
+            {
+                snakes[i].ReturnTime();
+            }
         }
 
 
@@ -270,6 +287,8 @@ namespace Snake
                 }
             }
         }
+
+
     }
 
     #endregion

@@ -1,9 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 
 namespace Snake
 {
+
+    public struct LastSnakeMoviment
+    {
+        public SnakeDirection lastDirection;
+        //public Position snakeHeadPosiiton;
+        public Position snakeTailPosition;
+        public int snakeSize;
+    }
 
     public class Snake : MonoBehaviour
     {
@@ -23,6 +32,7 @@ namespace Snake
 
         Position snakeLastTileInfo;
 
+        LastSnakeMoviment lastMoviment;
 
         protected virtual void Update()
         {
@@ -57,6 +67,7 @@ namespace Snake
                 CheckForBlock();
                 nextMoveTime = inverseSpeed;
                 canCheckInput = true;
+                StoreLastMoviment();
             }
         }
 
@@ -87,7 +98,7 @@ namespace Snake
 
 
             //Define an rando y position of snake
-            var snakeTilePositionY = Random.Range(1, arenaHeight - 1);
+            var snakeTilePositionY = UnityEngine.Random.Range(1, arenaHeight - 1);
             //Consider not position on wall;
             var snakeTilePositionX = initialTileSize;
             var snakeTilePosition = new Vector2(snakeTilePositionX, snakeTilePositionY);
@@ -164,6 +175,15 @@ namespace Snake
 
         }
 
+        protected void StoreLastMoviment()
+        {
+            lastMoviment.lastDirection = currentDirection;
+            //lastMoviment.snakeHeadPosiiton = snake[0].GetPosition(0);
+            lastMoviment.snakeTailPosition = snake[currentSize-1].GetPosition(0);
+            lastMoviment.snakeSize = currentSize;
+        }
+
+
         protected void CheckForBlock()
         {
             ArenaTileState checkResult = GameManager.Instance.CheckTileForSnake
@@ -184,8 +204,10 @@ namespace Snake
                         GrayEffect();
                         break;
                     case BlockType.BLUE:
+                        BlueEffect();
                         break;
                     case BlockType.GREEN:
+                        GrayEffect();
                         GreenEffect();
                         break;
                     case BlockType.RED:
@@ -240,6 +262,36 @@ namespace Snake
         {
             Debug.Log("GreenEffect");
             inverseSpeed -= GameManager.Instance.gameData.SpeedIncrease;
+        }
+
+        void BlueEffect()
+        {
+            Debug.Log("Blue effect");
+            GameManager.Instance.ReturnTime();
+        }
+
+
+        public void ReturnTime()
+        {
+            //Reset next moviment time for everyone
+            nextMoveTime = inverseSpeed;
+
+            currentDirection = lastMoviment.lastDirection;
+            for (int i = 0; i < currentSize - 1; i++)
+            {
+                snake[i].CopyValue(snake[i + 1]);
+            }
+
+            if(currentSize - lastMoviment.snakeSize > 0)
+            {
+                snake.Remove(snake[currentSize-1]);
+            }
+            else
+            {
+                snake[currentSize - 1].SetPosition(
+                                    lastMoviment.snakeTailPosition.x,
+                                    lastMoviment.snakeTailPosition.y);
+            }
         }
 
         #endregion
