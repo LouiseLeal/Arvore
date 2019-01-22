@@ -10,7 +10,7 @@ namespace Snake
         [SerializeField] private GameObject snakeTilePrefab;
          protected List<SnakeTile> snake = new List<SnakeTile>();
 
-        protected float speed;
+        protected float inverseSpeed;
 
         int currentSize;
         protected float nextMoveTime;
@@ -55,7 +55,7 @@ namespace Snake
             {
                 Move();
                 CheckForBlock();
-                nextMoveTime = speed;
+                nextMoveTime = inverseSpeed;
                 canCheckInput = true;
             }
         }
@@ -75,7 +75,7 @@ namespace Snake
 
             snake = new List<SnakeTile>();
 
-            this.speed = speed;
+            this.inverseSpeed = speed;
             nextMoveTime = speed;
 
             canCheckInput = true;
@@ -186,6 +186,7 @@ namespace Snake
                     case BlockType.BLUE:
                         break;
                     case BlockType.GREEN:
+                        GreenEffect();
                         break;
                     case BlockType.RED:
                         break;
@@ -218,6 +219,7 @@ namespace Snake
         }
 
 
+        #region BlocksEffects
         //Enlarge Snake by one tile
         void GrayEffect()
         {
@@ -233,5 +235,14 @@ namespace Snake
 
             snake.Add(newSnakeTile);
         }
+
+        void GreenEffect()
+        {
+            Debug.Log("GreenEffect");
+            inverseSpeed -= GameManager.Instance.gameData.SpeedIncrease;
+        }
+
+        #endregion
     }
+
 }

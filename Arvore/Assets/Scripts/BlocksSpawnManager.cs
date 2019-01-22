@@ -63,7 +63,7 @@ namespace Snake
             if (blocks == null || blocks.Length < 0) return null;
 
             //Debug.Log("positin" + position);
-            float random = UnityEngine.Random.Range(0, 1);
+            float random = UnityEngine.Random.Range(0f, 1f);
             var theshold = grayChance;
             Debug.Log(random);
 

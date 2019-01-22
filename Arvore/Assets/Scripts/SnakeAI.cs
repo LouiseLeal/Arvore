@@ -16,7 +16,7 @@ namespace Snake {
             {
                 Move();
                 CheckForBlock();
-                nextMoveTime = speed;
+                nextMoveTime = inverseSpeed;
                 canCheckInput = true;
             }
         }
@@ -52,7 +52,7 @@ namespace Snake {
                 }
             }
 
-            Debug.Log("CurrentDirection " + currentDirection);
+//            Debug.Log("CurrentDirection " + currentDirection);
 
             //if (targetPosition.x - position.x < 0)
             //{

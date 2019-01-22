@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: GameDataDefault
   m_EditorClassIdentifier: 
   grayBlock: 0.5
-  greenBlock: 0.15
-  redBlock: 0.2
-  blueBlock: 0.15
-  SpeedIncrease: 1
+  greenBlock: 0.5
+  redBlock: 0
+  blueBlock: 0
+  SpeedIncrease: 0.02
   RangeConnon: 1
   TileSize: 20
   arenaHeight: 15
   arenaWidth: 30
   initialSnakeSize: 3
-  snakeSpeed: 0.3
+  snakeSpeed: 0.4
