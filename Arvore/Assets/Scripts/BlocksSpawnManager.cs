@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Snake
@@ -26,9 +28,9 @@ namespace Snake
         private float blueChance;
         private float redChance;
 
-
-
         Block[] blocks;
+
+        List<Block> activesBlocks = new List<Block>(); 
 
 
         public void CreateBlockPool(int maxBlocks, Vector2 tileSize)
@@ -56,28 +58,30 @@ namespace Snake
             this.redChance = redChance / totalChance;
         }
 
-        public Block EnableBlock(Vector2 position)
+        public Block EnableBlock(Position position,Vector2 canvasPosition)
         {
             if (blocks == null || blocks.Length < 0) return null;
 
-
             //Debug.Log("positin" + position);
-            float random = Random.Range(0, 1);
+            float random = UnityEngine.Random.Range(0, 1);
             var theshold = grayChance;
             Debug.Log(random);
 
-            Block activeBlock = null;
+            Block enabledBlock = null;
 
             for (int i = 0; i < blocks.Length; i++)
             {
                 if(blocks[i].type == BlockType.INACTIVE)
                 {
-                    activeBlock = blocks[i];
+                    enabledBlock = blocks[i];
                     break;
                 }
             }
 
-            if(activeBlock == null)
+            enabledBlock.SetPosition(position);
+            activesBlocks.Add(enabledBlock);
+
+            if(enabledBlock == null)
             {
                 Debug.Log("activeBlock not found");
                 return null;
@@ -85,29 +89,29 @@ namespace Snake
 
             if (random <= theshold)
             {
-                activeBlock.SetBlock(BlockType.GRAY, position);
-                return activeBlock; 
+                enabledBlock.SetBlock(BlockType.GRAY, canvasPosition);
+                return enabledBlock; 
             }
 
             theshold += blueChance;
             if (random <= theshold)
             {
-                activeBlock.SetBlock(BlockType.BLUE, position);
-                return activeBlock;
+                enabledBlock.SetBlock(BlockType.BLUE, canvasPosition);
+                return enabledBlock;
             } 
 
             theshold += greenChance;
             if (random <= theshold)
             {
-                activeBlock.SetBlock(BlockType.GREEN, position);
-                return activeBlock;
+                enabledBlock.SetBlock(BlockType.GREEN, canvasPosition);
+                return enabledBlock;
             }
 
             theshold += redChance;
             if (random <= theshold)
             {
-                activeBlock.SetBlock(BlockType.RED, position);
-                return activeBlock;
+                enabledBlock.SetBlock(BlockType.RED, canvasPosition);
+                return enabledBlock;
             }
 
             return null;
@@ -116,6 +120,47 @@ namespace Snake
         public void DesableBlock(Block block)
         {
             block.SetBlock(BlockType.INACTIVE, Vector2.zero);
+            activesBlocks.Remove(block);
+        }
+
+        public Position GetNearBlock(Position position)
+        {
+            if (activesBlocks.Count == 0) {
+                Debug.Log("No blocks");
+            } else if (activesBlocks.Count == 1)
+            {
+                return activesBlocks[0].GetPosition();
+            }
+
+            var result = int.MaxValue;
+            int dist;
+
+            Position resultPosition = new Position();
+
+            for (int i = 0; i < activesBlocks.Count; i++)
+            {
+                dist = BlocksDistance(position, blocks[i].GetPosition());
+                if (dist < result) {
+                    result = dist;
+                    resultPosition = blocks[i].GetPosition(); 
+                 }
+            }
+
+            if (result == int.MaxValue)
+                Debug.LogError("Could not find near block");
+
+            return resultPosition;
+
+        }
+
+
+        int BlocksDistance(Position p1,Position p2)
+        {
+            int result = 0;
+            result = (Mathf.Abs(p1.x - p2.x)) + (Mathf.Abs(p1.y - p2.y));
+
+            return result;
         }
     }
 }
+

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Snake
 {
 
-    public struct Posiiton
+    public struct Position
     {
         public int x;
         public int y;
@@ -18,16 +19,25 @@ namespace Snake
         [SerializeField] private Transform ArenaContainer;
         [SerializeField] private BlocksSpawnManager BlocksManager;
 
-        [SerializeField] private Snake snake;
+
 
         ArenaTile[,] arena;
 
-        public Vector2 tileSize;
+        [HideInInspector] public Vector2 tileSize;
 
+        [Header("Snakes Settings")]
+        [SerializeField] private Snake snakePrefab;
+        [SerializeField] private SnakeAI snakeAIPrefab;
+        [SerializeField] Transform snakeContainer;
+        List<Snake> snakes = new List<Snake>();
+        int snakeAmount;
 
         #region UnityMethods
         private void Awake()
         {
+            //Todo get from input
+            snakeAmount = 1;
+
             //Todo create an method to calculate it
             tileSize = new Vector2(gameData.TileSize, gameData.TileSize);
 
@@ -49,7 +59,20 @@ namespace Snake
         private void Start()
         {
             SetBlock();
-            snake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
+
+            Snake newSnake;
+            SnakeAI newSnakeAI;
+
+            for (int i = 0; i < snakeAmount; i++)
+            {
+                //newSnake = Instantiate(snakePrefab, snakeContainer).GetComponent<Snake>();
+                //newSnake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
+                //snakes.Add(newSnake);
+
+                newSnakeAI = Instantiate(snakeAIPrefab, snakeContainer).GetComponent<SnakeAI>();
+                newSnakeAI.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
+                snakes.Add(newSnakeAI);
+            }
         }
         #endregion
 
@@ -88,6 +111,34 @@ namespace Snake
             }
         }
 
+        public Position GetNextVerticalPosition(Position position)
+        {
+            //Check for greater y empty value  
+            for (int i = position.y + 1; i < gameData.arenaHeight - 1; i++)
+            {
+                if(IsEmptyArenaTile(position.x, i))
+                {
+                    position.y = i;
+                    return position;
+                }
+            }
+
+            //Check for smaller y empty value
+
+            for (int i = 0; i < position.y -1; i++)
+            {
+                if (IsEmptyArenaTile(position.x, i))
+                {
+                    position.y = i;
+                    return position;
+                }
+            }
+
+            Debug.LogError("Could not find and vertical value");
+            return position;
+
+        }
+
         public Vector2 GetCanvasPosition(int x,int y)
         {
             return arena[x, y].GetCanvasPosition();
@@ -97,38 +148,40 @@ namespace Snake
         private BlockType SetBlock()
         {
 
-            int randomX = UnityEngine.Random.Range(1, gameData.arenaWidth - 2);
-            int randomY = UnityEngine.Random.Range(1, gameData.arenaHeight - 2);
+            Position random;
+            random.x = UnityEngine.Random.Range(1, gameData.arenaWidth - 2);
+            random.y = UnityEngine.Random.Range(1, gameData.arenaHeight - 2);
 
-            if (arena[randomX, randomY].GetArenaTileState() == ArenaTileState.EMPTY)
+            if (arena[random.x, random.y].GetArenaTileState() == ArenaTileState.EMPTY)
             {
                
-                Block block = BlocksManager.EnableBlock(arena[randomX,
-                                              randomY].GetCanvasPosition());
+                Block block = BlocksManager.EnableBlock(random,arena[random.x,
+                                              random.y].GetCanvasPosition());
                 if (block == null)
                     return BlockType.INACTIVE;
 
-                arena[randomX, randomY].
+                arena[random.x, random.y].
                        ChangeArenaTileState(ArenaTileState.BLOCK, block);
 
                 return block.type;
             }
 
-            var newRandomX = randomX + 1;
-            var newRandomY = randomY + 1;
-            for (int x = newRandomX; x < gameData.arenaWidth - 1; x++)
+            Position newRandom;
+            newRandom.x = random.x + 1;
+            newRandom.y = random.y + 1;
+            for (int x = newRandom.x; x < gameData.arenaWidth - 1; x++)
             {
-                for (int y = newRandomY; y < gameData.arenaHeight - 1; y++)
+                for (int y = newRandom.y; y < gameData.arenaHeight - 1; y++)
                 {
-                    newRandomX = x;
-                    newRandomY = y;
-                    if (arena[newRandomX, newRandomY].GetArenaTileState() == ArenaTileState.EMPTY)
+                    newRandom.x = x;
+                    newRandom.y = y;
+                    if (arena[newRandom.x, newRandom.y].GetArenaTileState() == ArenaTileState.EMPTY)
                     {
                        
-                        var block = BlocksManager.EnableBlock(arena[newRandomX, 
-                                                newRandomY].GetCanvasPosition());
+                        var block = BlocksManager.EnableBlock(newRandom,arena[newRandom.x, 
+                                                newRandom.y].GetCanvasPosition());
 
-                        arena[newRandomX, newRandomY].
+                        arena[newRandom.x, newRandom.y].
                                ChangeArenaTileState(ArenaTileState.BLOCK,block);
 
                         return block.type;
@@ -136,18 +189,18 @@ namespace Snake
                 }
             }
 
-            for (int x = 0; x < randomX - 1; x++)
+            for (int x = 0; x < random.x - 1; x++)
             {
-                for (int y = 0 + 1; y < randomY - 1; y++)
+                for (int y = 0 + 1; y < random.y - 1; y++)
                 {
-                    newRandomX = x;
-                    newRandomY = y;
-                    if (arena[newRandomX, newRandomY].GetArenaTileState() == ArenaTileState.EMPTY)
+                    newRandom.x = x;
+                    newRandom.y = y;
+                    if (arena[newRandom.x, newRandom.y].GetArenaTileState() == ArenaTileState.EMPTY)
                     {
-                        var block = BlocksManager.EnableBlock(arena[newRandomX,
-                                               newRandomY].GetCanvasPosition());
+                        var block = BlocksManager.EnableBlock(newRandom,arena[newRandom.x,
+                                               newRandom.y].GetCanvasPosition());
 
-                        arena[newRandomX, newRandomY].
+                        arena[newRandom.x, newRandom.y].
                                ChangeArenaTileState(ArenaTileState.BLOCK, block);
                         return block.type;
                     }
@@ -157,8 +210,14 @@ namespace Snake
             Debug.Log("No empty spaces");
             return BlockType.INACTIVE;
         }
-        #endregion
 
+
+        #endregion
+        //Todo change to position
+        public bool IsEmptyArenaTile(int x, int y)
+        {
+            return arena[x, y].GetArenaTileState() == ArenaTileState.EMPTY;
+        }
 
         public ArenaTileState CheckTileForSnake(int x, int y, out BlockType blockType)
         {
@@ -183,11 +242,22 @@ namespace Snake
         }
 
 
+        public Position GetNearBlockPosition(Position position )
+        {
+            return BlocksManager.GetNearBlock(position);
+        }
+
+
         #region GameOver
         public void GameOver()
         {
             ResetArena();
-            snake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
+            for (int i = 0; i < snakeAmount; i++)
+            {
+                snakes[i].CreateSnake(gameData.initialSnakeSize, 
+                            gameData.arenaHeight, tileSize, gameData.snakeSpeed);
+            }
+           
         }
 
         void ResetArena()

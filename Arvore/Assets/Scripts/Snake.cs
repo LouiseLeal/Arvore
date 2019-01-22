@@ -8,23 +8,23 @@ namespace Snake
     public class Snake : MonoBehaviour
     {
         [SerializeField] private GameObject snakeTilePrefab;
-        List<SnakeTile> snake = new List<SnakeTile>();
+         protected List<SnakeTile> snake = new List<SnakeTile>();
 
-        float speed;
+        protected float speed;
 
         int currentSize;
-        float nextMoveTime;
+        protected float nextMoveTime;
 
-        bool canCheckInput = false;
+        protected bool canCheckInput = false;
 
-        SnakeDirection currentDirection;
+        protected SnakeDirection currentDirection;
 
         int Blockseaten = 0;
 
-        Posiiton snakeLastTileInfo;
+        Position snakeLastTileInfo;
 
 
-        private void Update()
+        protected virtual void Update()
         {
             if (snake == null)
                 return;
@@ -92,6 +92,19 @@ namespace Snake
             var snakeTilePositionX = initialTileSize;
             var snakeTilePosition = new Vector2(snakeTilePositionX, snakeTilePositionY);
 
+            Position snakeTilePosition2;
+            snakeTilePosition2.x = snakeTilePositionX;
+            snakeTilePosition2.y = snakeTilePositionY;
+
+            if(!GameManager.Instance.IsEmptyArenaTile(snakeTilePosition2.x, snakeTilePosition2.y))
+            {
+                snakeTilePosition2.y = GameManager.Instance.GetNextVerticalPosition(snakeTilePosition2).y;
+            }
+
+            //Todo change
+            snakeTilePosition[0] = snakeTilePosition2.x;
+            snakeTilePosition[1] = snakeTilePosition2.y;
+
             currentSize = initialTileSize;
 
             newSnakeTile.SetSnake(snakeTilePosition, TileSize, true);
@@ -111,21 +124,21 @@ namespace Snake
             }
         }
 
-        void Move()
+        public virtual void  Move()
         {
             if (currentDirection != snake[0].currentDirection)
                 snake[0].SetRotation(currentDirection);
 
             switch (snake[0].currentDirection)
             {
-                case SnakeDirection.TOP:
-                    snake[0].SetPosition(snake[0].x, snake[0].y + 1);
+                case SnakeDirection.UP:
+                    snake[0].SetPosition(snake[0].x, snake[0].y - 1);
                     break;
                 case SnakeDirection.RIGHT:
                     snake[0].SetPosition(snake[0].x + 1, snake[0].y);
                     break;
                 case SnakeDirection.DOWN:
-                    snake[0].SetPosition(snake[0].x, snake[0].y - 1);
+                    snake[0].SetPosition(snake[0].x, snake[0].y + 1);
                     break;
                 case SnakeDirection.LEFT:
                     snake[0].SetPosition(snake[0].x - 1, snake[0].y);
@@ -151,7 +164,7 @@ namespace Snake
 
         }
 
-        void CheckForBlock()
+        protected void CheckForBlock()
         {
             ArenaTileState checkResult = GameManager.Instance.CheckTileForSnake
                             (snake[0].x, snake[0].y, out BlockType blockType);
@@ -190,11 +203,11 @@ namespace Snake
                 if (currentDirection != SnakeDirection.LEFT)
                     currentDirection += 1;
                 else
-                    currentDirection = SnakeDirection.TOP;
+                    currentDirection = SnakeDirection.UP;
             }
             else
             {
-                if (currentDirection != SnakeDirection.TOP)
+                if (currentDirection != SnakeDirection.UP)
                     currentDirection -= 1;
                 else
                     currentDirection = SnakeDirection.LEFT;

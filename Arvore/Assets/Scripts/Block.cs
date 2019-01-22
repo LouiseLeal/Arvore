@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System;
 
 namespace Snake
 {
     public class Block : MonoBehaviour
     {
-        Posiiton position;
+        Position position;
         public BlockType type;
         [SerializeField] RectTransform rectTransform;
         [SerializeField] Image image;
@@ -49,6 +50,15 @@ namespace Snake
 
         public BlockType GetBlockType() => type;
 
+        public Position GetPosition()
+        {
+            return position;
+        }
+
+        public void SetPosition(Position position)
+        {
+            this.position = position;
+        }
     }
 
 }

@@ -5,16 +5,17 @@ namespace Snake
 {
     public enum SnakeDirection
     {
-        TOP = 0,
+        UP = 0,
         RIGHT = 1,
         DOWN = 2,
-        LEFT = 3
+        LEFT = 3,
+        INVALID
     }
 
     public class SnakeTile : Tile
     {
         //Because the original rotation of the sprite the default direction is top
-        public SnakeDirection currentDirection = SnakeDirection.TOP;
+        public SnakeDirection currentDirection = SnakeDirection.UP;
         bool isHead = false;
 
         public void Start()
@@ -45,7 +46,7 @@ namespace Snake
 
             switch (currentDirection)
             {
-                case SnakeDirection.TOP:
+                case SnakeDirection.UP:
                     rectTransform.rotation = Quaternion.Euler(0, 0, 0);
                     break;
                 case SnakeDirection.RIGHT:
