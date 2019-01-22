@@ -36,7 +36,7 @@ namespace Snake
         private void Awake()
         {
             //Todo get from input
-            snakeAmount = 1;
+            snakeAmount = 2;
 
             //Todo create an method to calculate it
             tileSize = new Vector2(gameData.TileSize, gameData.TileSize);

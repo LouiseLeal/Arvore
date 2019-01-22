@@ -140,6 +140,24 @@ namespace Snake
             if (currentDirection != snake[0].currentDirection)
                 snake[0].SetRotation(currentDirection);
 
+
+            var lastSnakePart = currentSize - 1;
+
+            //Todo see this
+            //Storege last position for use it on gayr effect block
+            snakeLastTileInfo.x = snake[lastSnakePart].x;
+            snakeLastTileInfo.y = snake[lastSnakePart].y;
+
+            GameManager.Instance.SetArenaTileState(snake[lastSnakePart].x,
+                                    snake[lastSnakePart].y, ArenaTileState.EMPTY);
+
+
+            for (int i = lastSnakePart; i > 0; i--)
+            {
+                snake[i].CopyValue(snake[i - 1]);
+            }
+
+
             switch (snake[0].currentDirection)
             {
                 case SnakeDirection.UP:
@@ -155,23 +173,10 @@ namespace Snake
                     snake[0].SetPosition(snake[0].x - 1, snake[0].y);
                     break;
             }
-            //Check if the current tile has something;
+          
 
-            var lastSnakePart = currentSize - 1;
-
-            //Todo see this
-            //Storege last position for use it on gayr effect block
-            snakeLastTileInfo.x = snake[lastSnakePart].x;
-            snakeLastTileInfo.y = snake[lastSnakePart].y;
-
-            GameManager.Instance.SetArenaTileState(snake[lastSnakePart].x, 
-                                    snake[lastSnakePart].y, ArenaTileState.EMPTY);
-
-
-            for (int i = lastSnakePart; i > 0; i--)
-            {
-                snake[i].CopyValue(snake[i-1]);
-            }
+           
+           
 
         }
 
@@ -275,6 +280,11 @@ namespace Snake
         {
             //Reset next moviment time for everyone
             nextMoveTime = inverseSpeed;
+
+            //Because the snakes will return a tile 
+            //Is needed to set this tile as empty
+            GameManager.Instance.SetArenaTileState(snake[0].x, snake[0].y,
+                                                         ArenaTileState.EMPTY);
 
             currentDirection = lastMoviment.lastDirection;
             for (int i = 0; i < currentSize - 1; i++)
