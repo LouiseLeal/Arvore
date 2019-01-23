@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+//All warning were verified 
+#pragma warning disable CS0649
 namespace Snake
 {
 
@@ -34,12 +35,27 @@ namespace Snake
 
         LastSnakeMoviment lastMoviment;
 
+        //TODO create a snake base
         protected virtual void Update()
         {
             if (snake == null)
                 return;
 
-            if (canCheckInput )  
+            CheckForInput();
+
+            nextMoveTime -= Time.deltaTime;
+
+            if (nextMoveTime < 0)
+            {
+                CheckForMove();
+            }
+        }
+
+
+        void CheckForInput()
+        {
+
+            if (canCheckInput)
             {
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
@@ -47,28 +63,26 @@ namespace Snake
                     canCheckInput = false;
                 }
 
-                if (Input.GetKeyDown(KeyCode.D)){
+                if (Input.GetKeyDown(KeyCode.D))
+                {
                     Rotate(clockwise: true);
                     canCheckInput = false;
                 }
-                else if (Input.GetKeyDown(KeyCode.A)){
+                else if (Input.GetKeyDown(KeyCode.A))
+                {
                     Rotate(clockwise: false);
                     canCheckInput = false;
                 }
-
-             
             }
+        }
 
-            nextMoveTime -= Time.deltaTime;
-
-            if (nextMoveTime < 0)
-            {
-                Move();
-                CheckForBlock();
-                nextMoveTime = inverseSpeed;
-                canCheckInput = true;
-                StoreLastMoviment();
-            }
+        protected virtual void CheckForMove()
+        {
+            Move();
+            CheckForBlock();
+            nextMoveTime = inverseSpeed;
+            canCheckInput = true;
+            StoreLastMoviment();
         }
 
 
@@ -143,7 +157,6 @@ namespace Snake
 
             var lastSnakePart = currentSize - 1;
 
-            //Todo see this
             //Storege last position for use it on gayr effect block
             snakeLastTileInfo.x = snake[lastSnakePart].x;
             snakeLastTileInfo.y = snake[lastSnakePart].y;
@@ -297,8 +310,7 @@ namespace Snake
                                     lastMoviment.snakeTailPosition.y);
             }
         }
-
         #endregion
     }
-
 }
+#pragma warning restore CS0649

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//All warning were verified 
+#pragma warning disable CS0649
+
 namespace Snake
 {
     public enum BlockType
@@ -22,7 +25,6 @@ namespace Snake
         [SerializeField] GameObject blockPrefab;
         [SerializeField] Transform BlocksContainer;
 
-        //todo Create block pool
         private float greenChance;
         private float grayChance;
         private float blueChance;
@@ -163,4 +165,5 @@ namespace Snake
         }
     }
 }
+#pragma warning restore CS0649
 

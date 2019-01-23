@@ -10,7 +10,6 @@ namespace Snake
         WALL,
         SNAKE,
         BLOCK
-
     }
 
     public class ArenaTile : Tile
@@ -31,9 +30,6 @@ namespace Snake
         {
             arenaTileState = ArenaTileState.WALL;
             image.sprite = spriteData.MapWall;
-            //gameObject.AddComponent<Collider2D>();
-            //Todo set size if needed
-
         }
 
         public Vector2 GetCanvasPosition() => rectTransform.anchoredPosition;

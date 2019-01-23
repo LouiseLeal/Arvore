@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
+
+//All warning were verified 
+#pragma warning disable CS0649
 
 namespace Snake
 {
@@ -35,10 +39,9 @@ namespace Snake
         #region UnityMethods
         private void Awake()
         {
-            //Todo get from input
-            snakeAmount = 2;
+            snakeAmount = gameData.snakesPlayerAmount;
 
-            //Todo create an method to calculate it
+            //Todo create an method to calculate it based on screen size
             tileSize = new Vector2(gameData.TileSize, gameData.TileSize);
 
             if (gameData == null)
@@ -60,14 +63,15 @@ namespace Snake
         {
             SetBlock();
 
+            //Declare before for the avoid garbage collector
             Snake newSnake;
             SnakeAI newSnakeAI;
 
             for (int i = 0; i < snakeAmount; i++)
             {
-                //newSnake = Instantiate(snakePrefab, snakeContainer).GetComponent<Snake>();
-                //newSnake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
-                //snakes.Add(newSnake);
+                newSnake = Instantiate(snakePrefab, snakeContainer).GetComponent<Snake>();
+                newSnake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
+                snakes.Add(newSnake);
 
                 newSnakeAI = Instantiate(snakeAIPrefab, snakeContainer).GetComponent<SnakeAI>();
                 newSnakeAI.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
@@ -75,15 +79,15 @@ namespace Snake
             }
         }
 
-       
+
         #endregion
 
 
         #region GameSetting
-        //Create arena programaticaly 
+        //Create arena programaticaly
         private void CreateArena()
         {
-            //set variables before for the avoid garbage collection 
+            //set variables before for the avoid garbage collection
             GameObject newGameObject;
             ArenaTile newTile;
             Vector2 newCanvasPosition = Vector2.zero;
@@ -94,8 +98,12 @@ namespace Snake
                 {
                     newGameObject = Instantiate(MapTilePrefab, ArenaContainer) as GameObject;
 
-                    //Todo use string builder
-                    newGameObject.name = "arena " + x + " " + y;
+                    //Use string build for more optimized code
+                    StringBuilder tileName = new StringBuilder("arena ", 30);
+                    tileName.Append(x.ToString());
+                    tileName.Append(" ");
+                    tileName.Append(y.ToString());
+                    newGameObject.name = tileName.ToString();
 
                     newTile = newGameObject.GetComponent<ArenaTile>();
                     newTile.SetTileSize (tileSize);
@@ -115,7 +123,7 @@ namespace Snake
 
         public Position GetNextVerticalPosition(Position position)
         {
-            //Check for greater y empty value  
+            //Check for greater y empty value
             for (int i = position.y + 1; i < gameData.arenaHeight - 1; i++)
             {
                 if(IsEmptyArenaTile(position.x, i))
@@ -146,17 +154,17 @@ namespace Snake
             return arena[x, y].GetCanvasPosition();
         }
 
-        //Todo find a better way
+       
         private BlockType SetBlock()
         {
-
+            //Find a random and valid tile to place the new block
             Position random;
             random.x = UnityEngine.Random.Range(1, gameData.arenaWidth - 2);
             random.y = UnityEngine.Random.Range(1, gameData.arenaHeight - 2);
 
             if (arena[random.x, random.y].GetArenaTileState() == ArenaTileState.EMPTY)
             {
-               
+
                 Block block = BlocksManager.EnableBlock(random,arena[random.x,
                                               random.y].GetCanvasPosition());
                 if (block == null)
@@ -167,7 +175,7 @@ namespace Snake
 
                 return block.type;
             }
-
+            //To reduce an if in a while loop, It is divided in two fors;
             Position newRandom;
             newRandom.x = random.x + 1;
             newRandom.y = random.y + 1;
@@ -179,8 +187,8 @@ namespace Snake
                     newRandom.y = y;
                     if (arena[newRandom.x, newRandom.y].GetArenaTileState() == ArenaTileState.EMPTY)
                     {
-                       
-                        var block = BlocksManager.EnableBlock(newRandom,arena[newRandom.x, 
+
+                        var block = BlocksManager.EnableBlock(newRandom,arena[newRandom.x,
                                                 newRandom.y].GetCanvasPosition());
 
                         arena[newRandom.x, newRandom.y].
@@ -222,8 +230,7 @@ namespace Snake
             return arena[position.x, position.y].GetArenaTileState() == ArenaTileState.EMPTY ||
                     arena[position.x, position.y].GetArenaTileState() == ArenaTileState.BLOCK;
         }
-
-        //Todo change to position
+        
         public bool IsEmptyArenaTile(int x, int y)
         {
             return arena[x, y].GetArenaTileState() == ArenaTileState.EMPTY;
@@ -236,7 +243,7 @@ namespace Snake
 
             if (result == ArenaTileState.BLOCK)
             {
-                //TOdo use only the block tyoe
+
                 blockType = arena[x, y].block.type;
 
                 //Desable eaten block
@@ -249,7 +256,7 @@ namespace Snake
 
             arena[x, y].ChangeArenaTileState(ArenaTileState.SNAKE);
 
-           
+
 
             return result;
         }
@@ -257,7 +264,7 @@ namespace Snake
 
         public void  SetArenaTileState(int x, int y, ArenaTileState arenaTileState)
         {
-            arena[x, y].ChangeArenaTileState(arenaTileState);
+            arena[x,y].ChangeArenaTileState(arenaTileState);
         }
 
 
@@ -281,10 +288,10 @@ namespace Snake
             ResetArena();
             for (int i = 0; i < snakeAmount; i++)
             {
-                snakes[i].CreateSnake(gameData.initialSnakeSize, 
+                snakes[i].CreateSnake(gameData.initialSnakeSize,
                             gameData.arenaHeight, tileSize, gameData.snakeSpeed);
             }
-           
+
         }
 
         void ResetArena()
@@ -297,12 +304,8 @@ namespace Snake
                 }
             }
         }
-
-
     }
 
     #endregion
-
-        
-
 }
+#pragma warning restore CS0649

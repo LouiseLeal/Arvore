@@ -12,15 +12,19 @@ namespace Snake {
         {
             nextMoveTime -= Time.deltaTime;
 
-            //TODO change it to a function
             if (nextMoveTime < 0)
             {
-                Move();
-                CheckForBlock();
-                nextMoveTime = inverseSpeed;
-                canCheckInput = true;
-                StoreLastMoviment();
+                CheckForMove();
             }
+        }
+
+        protected override void CheckForMove()
+        {
+            Move();
+            CheckForBlock();
+            nextMoveTime = inverseSpeed;
+            canCheckInput = true;
+            StoreLastMoviment();
         }
 
 

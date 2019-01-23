@@ -3,6 +3,9 @@ using System.Collections;
 using UnityEngine.UI;
 using System;
 
+//All warning were verified 
+#pragma warning disable CS0649
+
 namespace Snake
 {
     public class Block : MonoBehaviour
@@ -60,5 +63,5 @@ namespace Snake
             this.position = position;
         }
     }
-
 }
+#pragma warning restore CS0649

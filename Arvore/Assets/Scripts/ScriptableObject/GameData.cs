@@ -23,8 +23,5 @@ public class GameData : ScriptableObject
     [Header("Snake parameters")]
     public int initialSnakeSize = 3;
     public float snakeSpeed = 1;
-
-    //Todo ainda não entendi como isso funciona
-    //[Header("Preset parameters")]
-
+    public int snakesPlayerAmount = 1;
 }
