@@ -74,6 +74,8 @@ namespace Snake
                 snakes.Add(newSnakeAI);
             }
         }
+
+       
         #endregion
 
 
@@ -213,6 +215,14 @@ namespace Snake
 
 
         #endregion
+
+
+        internal bool IsSnakeValidArenaTile(Position position)
+        {
+            return arena[position.x, position.y].GetArenaTileState() == ArenaTileState.EMPTY ||
+                    arena[position.x, position.y].GetArenaTileState() == ArenaTileState.BLOCK;
+        }
+
         //Todo change to position
         public bool IsEmptyArenaTile(int x, int y)
         {

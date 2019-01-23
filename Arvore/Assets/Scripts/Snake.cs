@@ -157,27 +157,21 @@ namespace Snake
                 snake[i].CopyValue(snake[i - 1]);
             }
 
-
             switch (snake[0].currentDirection)
             {
                 case SnakeDirection.UP:
-                    snake[0].SetPosition(snake[0].x, snake[0].y - 1);
+                    snake[0].SetPosition(snake[0].x, snake[0].y - 1, true);
                     break;
                 case SnakeDirection.RIGHT:
-                    snake[0].SetPosition(snake[0].x + 1, snake[0].y);
+                    snake[0].SetPosition(snake[0].x + 1, snake[0].y, true);
                     break;
                 case SnakeDirection.DOWN:
-                    snake[0].SetPosition(snake[0].x, snake[0].y + 1);
+                    snake[0].SetPosition(snake[0].x, snake[0].y + 1, true);
                     break;
                 case SnakeDirection.LEFT:
-                    snake[0].SetPosition(snake[0].x - 1, snake[0].y);
+                    snake[0].SetPosition(snake[0].x - 1, snake[0].y, true);
                     break;
             }
-          
-
-           
-           
-
         }
 
         protected void StoreLastMoviment()

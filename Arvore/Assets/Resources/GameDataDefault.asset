@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68d9f172b93424929b24af2d93840bd7, type: 3}
   m_Name: GameDataDefault
   m_EditorClassIdentifier: 
-  grayBlock: 0.5
+  grayBlock: 1
   greenBlock: 0
   redBlock: 0
-  blueBlock: 0.5
+  blueBlock: 0
   SpeedIncrease: 0.02
   RangeConnon: 1
   TileSize: 20

@@ -34,7 +34,7 @@ namespace Snake
 
 
             SetTileSize(tileSize);
-            SetPosition((int)position.x, (int)position.y);
+            SetPosition((int)position.x, (int)position.y, isHead);
             SetRotation(SnakeDirection.RIGHT);
 
             //Debug.Log(position.x + " " + isHead);
@@ -63,13 +63,20 @@ namespace Snake
             }
         }
 
-        public void SetPosition(int x, int y)
-        {
+        //Todo change to position
+        public void SetPosition(int x, int y, bool isHead = false)
+         {
             //Debug.Log("name" + name);
-            if(x == 0 || y == 0 || 
-                x == GameManager.Instance.gameData.arenaWidth-1 ||
-                y == GameManager.Instance.gameData.arenaHeight-1)
+
+            Position position;
+            position.x = x;
+            position.y = y;
+
+            //Only consider if the tile is valid if the SetPosition
+            //is for the head tile of snake
+            if (isHead && !GameManager.Instance.IsSnakeValidArenaTile(position))
             {
+                Debug.Log("Game over " + name);
                 GameManager.Instance.GameOver();
                 return;
             }
