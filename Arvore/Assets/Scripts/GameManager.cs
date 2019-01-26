@@ -34,14 +34,8 @@ namespace Snake
         [SerializeField] private SnakeAI snakeAIPrefab;
         [SerializeField] Transform snakeContainer;
         List<Snake> snakes = new List<Snake>();
+        List<Snake> snakesAI = new List<Snake>();
         int snakeAmount;
-
-        #region UnityMethods
-        //private void Awake()
-        //{
-
-
-        //}
 
         public void StartGame()
         {
@@ -68,27 +62,28 @@ namespace Snake
 
         void SetGame()
         {
+            Debug.Log("Reset Game");
+            BlocksManager.ResetBlocks();   
             SetBlock();
 
             //Declare before for the avoid garbage collector
             Snake newSnake;
             SnakeAI newSnakeAI;
 
+
             for (int i = 0; i < snakeAmount; i++)
             {
+                // Instatiate players snakes
                 newSnake = Instantiate(snakePrefab, snakeContainer).GetComponent<Snake>();
                 newSnake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
                 snakes.Add(newSnake);
 
+                //Instantiate pc snakes
                 newSnakeAI = Instantiate(snakeAIPrefab, snakeContainer).GetComponent<SnakeAI>();
                 newSnakeAI.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
-                snakes.Add(newSnakeAI);
+                snakesAI.Add(newSnakeAI);
             }
         }
-
-
-        #endregion
-
 
         #region GameSetting
         //Create arena programaticaly
@@ -289,16 +284,56 @@ namespace Snake
         }
 
 
+        //Methods for check and run game over
         #region GameOver
-        public void GameOver()
+        public void SnakeDie(Snake snake)
         {
-            ResetArena();
-            for (int i = 0; i < snakeAmount; i++)
-            {
-                snakes[i].CreateSnake(gameData.initialSnakeSize,
-                            gameData.arenaHeight, tileSize, gameData.snakeSpeed);
-            }
+            Debug.Log("snake die " + snake.name);
 
+            if (snake.IsSnakeAI())
+            {
+                if (!snakesAI.Remove(snake))
+                    Debug.Log("Error when snake AI die");
+            }
+            else
+            {
+                if (!snakes.Remove(snake))
+                    Debug.Log("Error when player snake die");
+            }
+            snake.Die();
+            CheckForGameOver();
+
+        }
+
+        bool CanFastFoward = false;
+
+
+        void CheckForGameOver()
+        {
+            if(snakes.Count == 1 && snakesAI.Count == 0)
+            { 
+                SetGameOver(snakes[0]);
+                snakes.Remove (snakes[0]);
+            }
+            else if (snakes.Count == 0 && snakesAI.Count == 1)
+            {
+                SetGameOver(snakesAI[0]);
+                snakesAI.Remove(snakesAI[0]);
+            }
+            else if (snakes.Count == 0  &&  snakesAI.Count > 2)
+            {
+                CanFastFoward = true;
+            }
+        }
+
+
+
+        void SetGameOver(Snake snake)
+        {
+            BlocksManager.ResetBlocks();
+            SystemManager.Instance.GameOver(snake);
+            ResetArena();
+            snake.isActive = false;
         }
 
         void ResetArena()

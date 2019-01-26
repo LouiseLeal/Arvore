@@ -8,8 +8,17 @@ namespace Snake {
     public class SnakeAI : Snake
     {
 
+        public override void CreateSnake(int initialTileSize, int arenaHeight, Vector2 TileSize, float speed)
+        {
+            base.CreateSnake(initialTileSize, arenaHeight, TileSize, speed);
+            SetSnakeAI();
+        }
+
         protected override void Update()
         {
+            if (snakeTiles == null && !isActiveAndEnabled)
+                return;
+
             nextMoveTime -= Time.deltaTime;
 
             if (nextMoveTime < 0)
@@ -18,29 +27,21 @@ namespace Snake {
             }
         }
 
-        protected override void CheckForMove()
-        {
-            Move();
-            CheckForBlock();
-            nextMoveTime = inverseSpeed;
-            canCheckInput = true;
-            StoreLastMoviment();
-        }
-
-
-        public override void Move()
+        public override bool Move()
         {
 
             ChangeDirection();
-            base.Move();
+            return base.Move();
         }
 
 
         void ChangeDirection()
         {
+           
+
             var position = new Position();
-            position.x = snake[0].x;
-            position.y = snake[0].y;
+            position.x = snakeTiles[0].x;
+            position.y = snakeTiles[0].y;
 
             var targetPosition = GameManager.Instance.GetNearBlockPosition(position);
 

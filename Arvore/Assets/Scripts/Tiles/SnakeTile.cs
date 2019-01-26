@@ -64,10 +64,9 @@ namespace Snake
         }
 
         //Todo change to position
-        public void SetPosition(int x, int y, bool isHead = false)
+        public bool SetPosition(int x, int y, bool isHead = false)
          {
-            //Debug.Log("name" + name);
-
+          
             Position position;
             position.x = x;
             position.y = y;
@@ -77,13 +76,14 @@ namespace Snake
             if (isHead && !GameManager.Instance.IsSnakeValidArenaTile(position))
             {
                 Debug.Log("Game over " + name);
-                GameManager.Instance.GameOver();
-                return;
+                return false;
             }
 
             this.x = x;
             this.y = y;
             rectTransform.anchoredPosition = GameManager.Instance.GetCanvasPosition(x, y);
+
+            return true;
         }
 
         public void CopyValue(SnakeTile snakeTile)

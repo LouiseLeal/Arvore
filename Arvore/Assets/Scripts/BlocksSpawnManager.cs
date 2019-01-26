@@ -118,7 +118,16 @@ namespace Snake
 
             return null;
         }
-    
+
+        internal void ResetBlocks()
+        {
+            for (int i = 0; i < blocks.Length; i++)
+            {
+                if (blocks[i].GetBlockType() != BlockType.INACTIVE) 
+                    DesableBlock(blocks[i]);
+            }
+        }
+
         public void DesableBlock(Block block)
         {
             block.SetBlock(BlockType.INACTIVE, Vector2.zero);

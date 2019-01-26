@@ -18,7 +18,7 @@ namespace Snake
     public class Snake : MonoBehaviour
     {
         [SerializeField] private GameObject snakeTilePrefab;
-         protected List<SnakeTile> snake = new List<SnakeTile>();
+        protected List<SnakeTile> snakeTiles = new List<SnakeTile>();
 
         protected float inverseSpeed;
 
@@ -34,11 +34,14 @@ namespace Snake
         Position snakeLastTileInfo;
 
         LastSnakeMoviment lastMoviment;
+        private bool isAI = false;
+
+        public bool isActive;
 
         //TODO create a snake base
         protected virtual void Update()
         {
-            if (snake == null)
+            if (snakeTiles == null || !isActive)
                 return;
 
             CheckForInput();
@@ -76,9 +79,14 @@ namespace Snake
             }
         }
 
-        protected virtual void CheckForMove()
+        protected void CheckForMove()
         {
-            Move();
+
+            if (!Move())
+            {
+                GameManager.Instance.SnakeDie(this);
+                return;
+            }
             CheckForBlock();
             nextMoveTime = inverseSpeed;
             canCheckInput = true;
@@ -86,19 +94,19 @@ namespace Snake
         }
 
 
-        public void CreateSnake(int initialTileSize, int arenaHeight, Vector2 TileSize, float speed)
+        public virtual void CreateSnake(int initialTileSize, int arenaHeight, Vector2 TileSize, float speed)
         {
 
             //TODO do it in a more efficiente
-            if(snake.Count != 0)
+            if (snakeTiles.Count != 0)
             {
-                for (int i = 0; i < snake.Count; i++)
+                for (int i = 0; i < snakeTiles.Count; i++)
                 {
-                    Destroy(snake[i].gameObject);
+                    Destroy(snakeTiles[i].gameObject);
                 }
             }
 
-            snake = new List<SnakeTile>();
+            snakeTiles = new List<SnakeTile>();
 
             this.inverseSpeed = speed;
             nextMoveTime = speed;
@@ -121,7 +129,7 @@ namespace Snake
             snakeTilePosition2.x = snakeTilePositionX;
             snakeTilePosition2.y = snakeTilePositionY;
 
-            if(!GameManager.Instance.IsEmptyArenaTile(snakeTilePosition2.x, snakeTilePosition2.y))
+            if (!GameManager.Instance.IsEmptyArenaTile(snakeTilePosition2.x, snakeTilePosition2.y))
             {
                 snakeTilePosition2.y = GameManager.Instance.GetNextVerticalPosition(snakeTilePosition2).y;
             }
@@ -134,7 +142,7 @@ namespace Snake
 
             newSnakeTile.SetSnake(snakeTilePosition, TileSize, true);
 
-            snake.Add(newSnakeTile);
+            snakeTiles.Add(newSnakeTile);
 
             for (int i = 1; i < initialTileSize; i++)
             {
@@ -145,53 +153,63 @@ namespace Snake
 
                 newSnakeTile.SetSnake(snakeTilePosition, TileSize, false);
 
-                snake.Add(newSnakeTile);
+                snakeTiles.Add(newSnakeTile);
             }
+
+            isActive = true;
         }
 
-        public virtual void  Move()
+        public virtual bool Move()
         {
-            if (currentDirection != snake[0].currentDirection)
-                snake[0].SetRotation(currentDirection);
+            if (currentDirection != snakeTiles[0].currentDirection)
+                snakeTiles[0].SetRotation(currentDirection);
 
 
             var lastSnakePart = currentSize - 1;
 
             //Storege last position for use it on gayr effect block
-            snakeLastTileInfo.x = snake[lastSnakePart].x;
-            snakeLastTileInfo.y = snake[lastSnakePart].y;
+            snakeLastTileInfo.x = snakeTiles[lastSnakePart].x;
+            snakeLastTileInfo.y = snakeTiles[lastSnakePart].y;
 
-            GameManager.Instance.SetArenaTileState(snake[lastSnakePart].x,
-                                    snake[lastSnakePart].y, ArenaTileState.EMPTY);
+            GameManager.Instance.SetArenaTileState(snakeTiles[lastSnakePart].x,
+                                    snakeTiles[lastSnakePart].y, ArenaTileState.EMPTY);
 
 
             for (int i = lastSnakePart; i > 0; i--)
             {
-                snake[i].CopyValue(snake[i - 1]);
+                snakeTiles[i].CopyValue(snakeTiles[i - 1]);
             }
 
-            switch (snake[0].currentDirection)
+            //Check if tile head could set position without 
+            //collider with wall or snakeTile
+            bool result = true;
+
+            switch (snakeTiles[0].currentDirection)
             {
                 case SnakeDirection.UP:
-                    snake[0].SetPosition(snake[0].x, snake[0].y - 1, true);
+                    result = snakeTiles[0].SetPosition(snakeTiles[0].x, snakeTiles[0].y - 1, true);
                     break;
                 case SnakeDirection.RIGHT:
-                    snake[0].SetPosition(snake[0].x + 1, snake[0].y, true);
+                    result = snakeTiles[0].SetPosition(snakeTiles[0].x + 1, snakeTiles[0].y, true);
                     break;
                 case SnakeDirection.DOWN:
-                    snake[0].SetPosition(snake[0].x, snake[0].y + 1, true);
+                    result = snakeTiles[0].SetPosition(snakeTiles[0].x, snakeTiles[0].y + 1, true);
                     break;
                 case SnakeDirection.LEFT:
-                    snake[0].SetPosition(snake[0].x - 1, snake[0].y, true);
+                    result = snakeTiles[0].SetPosition(snakeTiles[0].x - 1, snakeTiles[0].y, true);
                     break;
             }
+
+
+            return result;
+
         }
 
         protected void StoreLastMoviment()
         {
             lastMoviment.lastDirection = currentDirection;
             //lastMoviment.snakeHeadPosiiton = snake[0].GetPosition(0);
-            lastMoviment.snakeTailPosition = snake[currentSize-1].GetPosition(0);
+            lastMoviment.snakeTailPosition = snakeTiles[currentSize - 1].GetPosition(0);
             lastMoviment.snakeSize = currentSize;
         }
 
@@ -199,7 +217,7 @@ namespace Snake
         protected void CheckForBlock()
         {
             ArenaTileState checkResult = GameManager.Instance.CheckTileForSnake
-                            (snake[0].x, snake[0].y, out BlockType blockType);
+                            (snakeTiles[0].x, snakeTiles[0].y, out BlockType blockType);
 
             if (checkResult == ArenaTileState.BLOCK)
             {
@@ -228,6 +246,8 @@ namespace Snake
                         break;
                 }
             }
+
+           
         }
 
         void Rotate(bool clockwise)
@@ -267,7 +287,7 @@ namespace Snake
                                                     GetComponent<SnakeTile>();
             newSnakeTile.SetSnake(position, GameManager.Instance.tileSize, false);
 
-            snake.Add(newSnakeTile);
+            snakeTiles.Add(newSnakeTile);
         }
 
         void GreenEffect()
@@ -290,27 +310,59 @@ namespace Snake
 
             //Because the snakes will return a tile 
             //Is needed to set this tile as empty
-            GameManager.Instance.SetArenaTileState(snake[0].x, snake[0].y,
+            GameManager.Instance.SetArenaTileState(snakeTiles[0].x, snakeTiles[0].y,
                                                          ArenaTileState.EMPTY);
 
             currentDirection = lastMoviment.lastDirection;
             for (int i = 0; i < currentSize - 1; i++)
             {
-                snake[i].CopyValue(snake[i + 1]);
+                snakeTiles[i].CopyValue(snakeTiles[i + 1]);
             }
 
-            if(currentSize - lastMoviment.snakeSize > 0)
+            if (currentSize - lastMoviment.snakeSize > 0)
             {
-                snake.Remove(snake[currentSize-1]);
+                snakeTiles.Remove(snakeTiles[currentSize - 1]);
             }
             else
             {
-                snake[currentSize - 1].SetPosition(
+                snakeTiles[currentSize - 1].SetPosition(
                                     lastMoviment.snakeTailPosition.x,
                                     lastMoviment.snakeTailPosition.y);
             }
         }
+
+        //TODO Use pool like way to destroy (active) new snake
+        public void Die()
+        {
+            Debug.Log("Die " + name);
+            if (snakeTiles == null)
+                return;
+
+            for (int i = 0; i < snakeTiles.Count; i++)
+            {
+                //Destroy all snakeTile gameobjects
+                GameManager.Instance.SetArenaTileState(snakeTiles[i].x, snakeTiles[i].y,
+                                                         ArenaTileState.EMPTY);
+                Destroy(snakeTiles[i].gameObject);
+            }
+
+            snakeTiles = null;
+            this.enabled = false;
+
+            Destroy(gameObject);
+        }
+
         #endregion
+
+        public void SetSnakeAI()
+        {
+            isAI = true;
+        }
+
+        public bool IsSnakeAI()
+        {
+            return isAI;
+        }
     }
 }
 #pragma warning restore CS0649
