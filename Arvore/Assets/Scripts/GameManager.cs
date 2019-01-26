@@ -37,7 +37,13 @@ namespace Snake
         int snakeAmount;
 
         #region UnityMethods
-        private void Awake()
+        //private void Awake()
+        //{
+
+
+        //}
+
+        public void StartGame()
         {
             snakeAmount = gameData.snakesPlayerAmount;
 
@@ -57,9 +63,10 @@ namespace Snake
 
             CreateArena();
 
+            SetGame();
         }
 
-        private void Start()
+        void SetGame()
         {
             SetBlock();
 
