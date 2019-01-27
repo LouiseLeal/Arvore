@@ -87,9 +87,9 @@ namespace Snake
                 GameManager.Instance.SnakeDie(this);
                 return;
             }
+            canCheckInput = true;
             CheckForBlock();
             nextMoveTime = inverseSpeed;
-            canCheckInput = true;
             StoreLastMoviment();
         }
 
@@ -207,10 +207,13 @@ namespace Snake
 
         protected void StoreLastMoviment()
         {
-            lastMoviment.lastDirection = currentDirection;
-            //lastMoviment.snakeHeadPosiiton = snake[0].GetPosition(0);
-            lastMoviment.snakeTailPosition = snakeTiles[currentSize - 1].GetPosition(0);
-            lastMoviment.snakeSize = currentSize;
+            if (snakeTiles == null)
+            {
+                lastMoviment.lastDirection = currentDirection;
+                //lastMoviment.snakeHeadPosiiton = snake[0].GetPosition(0);
+                lastMoviment.snakeTailPosition = snakeTiles[currentSize - 1].GetPosition(0);
+                lastMoviment.snakeSize = currentSize;
+            }
         }
 
 
@@ -242,7 +245,7 @@ namespace Snake
                         break;
                     case BlockType.RED:
                         GrayEffect();
-//                        RedEffect();
+                        RedEffect();
                         break;
                     default:
                         break;
@@ -302,10 +305,10 @@ namespace Snake
             GameManager.Instance.ReturnTime();
         }
 
-        //private void RedEffect()
-        //{
-        //    GameManager.Instance.FireBullet();
-        //}
+        private void RedEffect()
+        {
+            GameManager.Instance.FireBullet(this);
+        }
 
 
 
@@ -335,6 +338,28 @@ namespace Snake
                                     lastMoviment.snakeTailPosition.x,
                                     lastMoviment.snakeTailPosition.y);
             }
+        }
+
+        public Position GetHeadPosition()
+        {
+            Position position;
+            position.x = snakeTiles[0].x;
+            position.y = snakeTiles[0].y;
+            return position;
+        }
+
+        public Snake IsOtherSnakeInRange(Snake other, int range)
+        {
+            //Compare Heads distance in tiles
+            bool snakeInRangeX = Mathf.Abs(this.snakeTiles[0].x -
+                                               other.snakeTiles[0].x) == range;
+            bool snakeInRangeY = Mathf.Abs(this.snakeTiles[0].y -
+                                               other.snakeTiles[0].y) == range;
+
+            if(snakeInRangeX && snakeInRangeY)
+                return other;
+
+            return null;
         }
 
         //TODO Use pool like way to destroy (active) new snake

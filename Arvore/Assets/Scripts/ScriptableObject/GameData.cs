@@ -15,6 +15,8 @@ public class GameData : ScriptableObject
     public float speedIncrease = 1f;
     //Range has to be in tiles
     public int rangeConnon = 2;
+    public float cannonThreshold = 0.3f;
+    public float cannonSpeed = 0.5f;
 
     [Header("Game parameters")]
     public int tileSize = 20;

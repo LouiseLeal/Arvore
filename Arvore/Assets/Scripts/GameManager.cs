@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 
 //All warning were verified 
 #pragma warning disable CS0649
@@ -27,8 +29,12 @@ namespace Snake
 
         [HideInInspector] public Vector2 tileSize;
 
+        [SerializeField] Cannon cannon;
+
         [Header("Snakes Settings")]
         [SerializeField] private Snake snakePrefab;
+
+       
         [SerializeField] private SnakeAI snakeAIPrefab;
         [SerializeField] Transform snakeContainer;
         List<Snake> snakes = new List<Snake>();
@@ -37,6 +43,8 @@ namespace Snake
 
         int snakeAIAmount = 0;
         int snakePlayerAmount = 0;
+
+
 
         public void StartGame()
         {
@@ -59,6 +67,15 @@ namespace Snake
             CreateArena();
 
             SetGame();
+
+            cannon.SetTileSize(tileSize);
+        }
+
+        //Check if a snake dies 
+        // Makes it not evaluate in the same frame as the snakes dies
+        private void Update()
+        {
+            CheckForGameOver();
         }
 
         void SetGame()
@@ -278,6 +295,13 @@ namespace Snake
             return BlocksManager.GetNearBlock(position);
         }
 
+
+        public Vector2 GetArenaCanvasPosition(Position position1)
+        {
+            return arena[position1.x, position1.y].GetCanvasPosition();
+        }
+
+
         #region BlocksPowers
         public void ReturnTime()
         {
@@ -287,15 +311,39 @@ namespace Snake
             }
         }
 
-        public void FireBullet(Position position)
+        public void FireBullet(Snake snake)
         {
-            GetNearSnakeHead(position, gameData.rangeConnon);
+            Snake nearSnake =  GetNearSnakeHead(snake, gameData.rangeConnon);
+            cannon.ShootCannon(snake,nearSnake, gameData.cannonThreshold, 
+                                                        gameData.cannonSpeed);
         }
 
-        private void GetNearSnakeHead(Position position, int rangeConnon)
+        private Snake GetNearSnakeHead(Snake snake, int rangeConnon)
         {
+            List<Snake> inRangeSnakes = new List<Snake>();
+            //The range is already taking out the arena bounds
+            for (int i = 0; i < snakes.Count; i++)
+            {
+                if (snake == snakes[i])
+                    continue;
+
+                if (snake.IsOtherSnakeInRange(snakes[i], rangeConnon) == null)
+                    inRangeSnakes.Add(snakes[i]);
+                
+            }
+            if (inRangeSnakes.Count == 0)
+                return null;
+
+            int rand = UnityEngine.Random.Range(0, inRangeSnakes.Count - 1);
+
+            return inRangeSnakes[rand];
 
         }
+
+        //todo create an script
+
+
+
 
         #endregion
 
@@ -303,7 +351,7 @@ namespace Snake
         #region GameOver
         public void SnakeDie(Snake snake)
         {
-           
+            Debug.Log("snake die" + name);  
             if (!snakes.Remove(snake))
                 Debug.LogError("Error when snake AI die");
 
@@ -317,7 +365,6 @@ namespace Snake
             }
 
             snake.Die();
-            CheckForGameOver();
 
         }
 

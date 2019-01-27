@@ -150,7 +150,7 @@ namespace Snake
 
             for (int i = 0; i < activesBlocks.Count; i++)
             {
-                dist = BlocksDistance(position, blocks[i].GetPosition());
+                dist = PositionUtil.Dist(position, blocks[i].GetPosition());
                 if (dist < result) {
                     result = dist;
                     resultPosition = blocks[i].GetPosition(); 
@@ -162,15 +162,6 @@ namespace Snake
 
             return resultPosition;
 
-        }
-
-
-        int BlocksDistance(Position p1,Position p2)
-        {
-            int result = 0;
-            result = (Mathf.Abs(p1.x - p2.x)) + (Mathf.Abs(p1.y - p2.y));
-
-            return result;
         }
     }
 }
