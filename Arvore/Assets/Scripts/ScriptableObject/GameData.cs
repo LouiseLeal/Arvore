@@ -12,11 +12,12 @@ public class GameData : ScriptableObject
     public float blueBlock = 0.15f;
 
     [Header("Blocks specifics parameters")]
-    public float SpeedIncrease = 1f;
-    public float RangeConnon = 1f;
+    public float speedIncrease = 1f;
+    //Range has to be in tiles
+    public int rangeConnon = 2;
 
     [Header("Game parameters")]
-    public int TileSize = 20;
+    public int tileSize = 20;
     public int arenaHeight = 10;
     public int arenaWidth = 10;
 

@@ -23,8 +23,6 @@ namespace Snake
         [SerializeField] private Transform ArenaContainer;
         [SerializeField] private BlocksSpawnManager BlocksManager;
 
-
-
         ArenaTile[,] arena;
 
         [HideInInspector] public Vector2 tileSize;
@@ -34,15 +32,18 @@ namespace Snake
         [SerializeField] private SnakeAI snakeAIPrefab;
         [SerializeField] Transform snakeContainer;
         List<Snake> snakes = new List<Snake>();
-        List<Snake> snakesAI = new List<Snake>();
+
         int snakeAmount;
+
+        int snakeAIAmount = 0;
+        int snakePlayerAmount = 0;
 
         public void StartGame()
         {
             snakeAmount = gameData.snakesPlayerAmount;
 
             //Todo create an method to calculate it based on screen size
-            tileSize = new Vector2(gameData.TileSize, gameData.TileSize);
+            tileSize = new Vector2(gameData.tileSize, gameData.tileSize);
 
             if (gameData == null)
                 gameData = Resources.Load<GameData>("GameDataDefault");
@@ -63,7 +64,7 @@ namespace Snake
         void SetGame()
         {
             Debug.Log("Reset Game");
-            BlocksManager.ResetBlocks();   
+            BlocksManager.ResetBlocks();
             SetBlock();
 
             //Declare before for the avoid garbage collector
@@ -81,8 +82,10 @@ namespace Snake
                 //Instantiate pc snakes
                 newSnakeAI = Instantiate(snakeAIPrefab, snakeContainer).GetComponent<SnakeAI>();
                 newSnakeAI.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
-                snakesAI.Add(newSnakeAI);
+                snakes.Add(newSnakeAI);
             }
+            snakePlayerAmount = snakeAmount;
+            snakeAIAmount = snakeAmount; 
         }
 
         #region GameSetting
@@ -108,7 +111,7 @@ namespace Snake
                     newGameObject.name = tileName.ToString();
 
                     newTile = newGameObject.GetComponent<ArenaTile>();
-                    newTile.SetTileSize (tileSize);
+                    newTile.SetTileSize(tileSize);
 
                     newCanvasPosition.x = tileSize.x * x;
                     newCanvasPosition.y = -tileSize.y * y;
@@ -128,7 +131,7 @@ namespace Snake
             //Check for greater y empty value
             for (int i = position.y + 1; i < gameData.arenaHeight - 1; i++)
             {
-                if(IsEmptyArenaTile(position.x, i))
+                if (IsEmptyArenaTile(position.x, i))
                 {
                     position.y = i;
                     return position;
@@ -137,7 +140,7 @@ namespace Snake
 
             //Check for smaller y empty value
 
-            for (int i = 0; i < position.y -1; i++)
+            for (int i = 0; i < position.y - 1; i++)
             {
                 if (IsEmptyArenaTile(position.x, i))
                 {
@@ -151,12 +154,12 @@ namespace Snake
 
         }
 
-        public Vector2 GetCanvasPosition(int x,int y)
+        public Vector2 GetCanvasPosition(int x, int y)
         {
             return arena[x, y].GetCanvasPosition();
         }
 
-       
+
         private BlockType SetBlock()
         {
             //Find a random and valid tile to place the new block
@@ -167,7 +170,7 @@ namespace Snake
             if (arena[random.x, random.y].GetArenaTileState() == ArenaTileState.EMPTY)
             {
 
-                Block block = BlocksManager.EnableBlock(random,arena[random.x,
+                Block block = BlocksManager.EnableBlock(random, arena[random.x,
                                               random.y].GetCanvasPosition());
                 if (block == null)
                     return BlockType.INACTIVE;
@@ -190,11 +193,11 @@ namespace Snake
                     if (arena[newRandom.x, newRandom.y].GetArenaTileState() == ArenaTileState.EMPTY)
                     {
 
-                        var block = BlocksManager.EnableBlock(newRandom,arena[newRandom.x,
+                        var block = BlocksManager.EnableBlock(newRandom, arena[newRandom.x,
                                                 newRandom.y].GetCanvasPosition());
 
                         arena[newRandom.x, newRandom.y].
-                               ChangeArenaTileState(ArenaTileState.BLOCK,block);
+                               ChangeArenaTileState(ArenaTileState.BLOCK, block);
 
                         return block.type;
                     }
@@ -209,7 +212,7 @@ namespace Snake
                     newRandom.y = y;
                     if (arena[newRandom.x, newRandom.y].GetArenaTileState() == ArenaTileState.EMPTY)
                     {
-                        var block = BlocksManager.EnableBlock(newRandom,arena[newRandom.x,
+                        var block = BlocksManager.EnableBlock(newRandom, arena[newRandom.x,
                                                newRandom.y].GetCanvasPosition());
 
                         arena[newRandom.x, newRandom.y].
@@ -232,7 +235,7 @@ namespace Snake
             return arena[position.x, position.y].GetArenaTileState() == ArenaTileState.EMPTY ||
                     arena[position.x, position.y].GetArenaTileState() == ArenaTileState.BLOCK;
         }
-        
+
         public bool IsEmptyArenaTile(int x, int y)
         {
             return arena[x, y].GetArenaTileState() == ArenaTileState.EMPTY;
@@ -249,7 +252,7 @@ namespace Snake
                 blockType = arena[x, y].block.type;
 
                 //Desable eaten block
-                BlocksManager.DesableBlock(arena[x,y].block);
+                BlocksManager.DesableBlock(arena[x, y].block);
                 //Enable a new block
                 SetBlock();
 
@@ -264,17 +267,18 @@ namespace Snake
         }
 
 
-        public void  SetArenaTileState(int x, int y, ArenaTileState arenaTileState)
+        public void SetArenaTileState(int x, int y, ArenaTileState arenaTileState)
         {
-            arena[x,y].ChangeArenaTileState(arenaTileState);
+            arena[x, y].ChangeArenaTileState(arenaTileState);
         }
 
 
-        public Position GetNearBlockPosition(Position position )
+        public Position GetNearBlockPosition(Position position)
         {
             return BlocksManager.GetNearBlock(position);
         }
 
+        #region BlocksPowers
         public void ReturnTime()
         {
             for (int i = 0; i < snakes.Count; i++)
@@ -283,23 +287,35 @@ namespace Snake
             }
         }
 
+        public void FireBullet(Position position)
+        {
+            GetNearSnakeHead(position, gameData.rangeConnon);
+        }
+
+        private void GetNearSnakeHead(Position position, int rangeConnon)
+        {
+
+        }
+
+        #endregion
 
         //Methods for check and run game over
         #region GameOver
         public void SnakeDie(Snake snake)
         {
-            Debug.Log("snake die " + snake.name);
+           
+            if (!snakes.Remove(snake))
+                Debug.LogError("Error when snake AI die");
 
             if (snake.IsSnakeAI())
             {
-                if (!snakesAI.Remove(snake))
-                    Debug.Log("Error when snake AI die");
+                snakeAIAmount--;
             }
             else
             {
-                if (!snakes.Remove(snake))
-                    Debug.Log("Error when player snake die");
+                snakePlayerAmount--;
             }
+
             snake.Die();
             CheckForGameOver();
 
@@ -310,18 +326,13 @@ namespace Snake
 
         void CheckForGameOver()
         {
-            if(snakes.Count == 1 && snakesAI.Count == 0)
-            { 
+
+            if (snakes.Count == 1)
+            {
                 SetGameOver(snakes[0]);
-                snakes.Remove (snakes[0]);
+                snakes.Remove(snakes[0]);
             }
-            else if (snakes.Count == 0 && snakesAI.Count == 1)
-            {
-                SetGameOver(snakesAI[0]);
-                snakesAI.Remove(snakesAI[0]);
-            }
-            else if (snakes.Count == 0  &&  snakesAI.Count > 2)
-            {
+            else if (snakePlayerAmount > 1) { 
                 CanFastFoward = true;
             }
         }

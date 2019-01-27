@@ -241,13 +241,13 @@ namespace Snake
                         GreenEffect();
                         break;
                     case BlockType.RED:
+                        GrayEffect();
+//                        RedEffect();
                         break;
                     default:
                         break;
                 }
             }
-
-           
         }
 
         void Rotate(bool clockwise)
@@ -293,7 +293,7 @@ namespace Snake
         void GreenEffect()
         {
             Debug.Log("GreenEffect");
-            inverseSpeed -= GameManager.Instance.gameData.SpeedIncrease;
+            inverseSpeed -= GameManager.Instance.gameData.speedIncrease;
         }
 
         void BlueEffect()
@@ -301,6 +301,12 @@ namespace Snake
             Debug.Log("Blue effect");
             GameManager.Instance.ReturnTime();
         }
+
+        //private void RedEffect()
+        //{
+        //    GameManager.Instance.FireBullet();
+        //}
+
 
 
         public void ReturnTime()
