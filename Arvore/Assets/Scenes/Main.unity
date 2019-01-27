@@ -531,6 +531,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startGame: {fileID: 650238232}
   gameOver: {fileID: 1941557154528872439}
+  gameData: {fileID: 0}
+  canvas: {fileID: 2096148815}
 --- !u!4 &1099917516
 Transform:
   m_ObjectHideFlags: 0
@@ -597,7 +599,6 @@ MonoBehaviour:
   gameData: {fileID: 11400000, guid: 9ec31849fe67f4807b96f8ee157fe50f, type: 2}
   MapTilePrefab: {fileID: 4216222638926081512, guid: f57c31f8375674ad893896c1f9ef1e56,
     type: 3}
-  ArenaContainer: {fileID: 413700197}
   BlocksManager: {fileID: 698889860}
   tileSize: {x: 0, y: 0}
   cannon: {fileID: 6855843780696447360}
@@ -605,7 +606,10 @@ MonoBehaviour:
     type: 3}
   snakeAIPrefab: {fileID: 1513933264170169708, guid: 2a980acb55bc54d04aae38bb87964ec9,
     type: 3}
+  arenaContainer: {fileID: 413700197}
   snakeContainer: {fileID: 805342949}
+  blockContainer: {fileID: 1645217045}
+  cannonContaine: {fileID: 2080795104}
 --- !u!1 &1645217044
 GameObject:
   m_ObjectHideFlags: 0
@@ -717,7 +721,7 @@ Canvas:
   m_RenderMode: 0
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0

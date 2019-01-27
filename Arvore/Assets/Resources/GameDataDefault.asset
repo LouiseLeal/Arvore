@@ -20,9 +20,10 @@ MonoBehaviour:
   rangeConnon: 5
   cannonThreshold: 0.01
   cannonSpeed: 0.5
-  tileSize: 20
-  arenaHeight: 15
-  arenaWidth: 30
+  tileSize: 23.366667
+  arenaHeight: 30
+  arenaWidth: 15
+  tileOffSet: {x: -14.02, y: -43.1}
   initialSnakeSize: 3
   snakeSpeed: 0.4
   snakesPlayerAmount: 1

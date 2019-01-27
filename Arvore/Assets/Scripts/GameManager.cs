@@ -20,9 +20,11 @@ namespace Snake
 
     public class GameManager : Singleton<GameManager>
     {
+
+
+
         [SerializeField] public GameData gameData;
         [SerializeField] private GameObject MapTilePrefab;
-        [SerializeField] private Transform ArenaContainer;
         [SerializeField] private BlocksSpawnManager BlocksManager;
 
         ArenaTile[,] arena;
@@ -33,25 +35,29 @@ namespace Snake
 
         [Header("Snakes Settings")]
         [SerializeField] private Snake snakePrefab;
-
-       
         [SerializeField] private SnakeAI snakeAIPrefab;
-        [SerializeField] Transform snakeContainer;
         List<Snake> snakes = new List<Snake>();
-
         int snakeAmount;
-
         int snakeAIAmount = 0;
         int snakePlayerAmount = 0;
 
+        [Header("Containers")]
+
+        [SerializeField] private RectTransform arenaContainer;
+        [SerializeField] private RectTransform snakeContainer;
+        [SerializeField] private RectTransform blockContainer;
+        [SerializeField] private RectTransform cannonContaine;
 
 
         public void StartGame()
         {
+          
             snakeAmount = gameData.snakesPlayerAmount;
 
             //Todo create an method to calculate it based on screen size
             tileSize = new Vector2(gameData.tileSize, gameData.tileSize);
+
+            SetContainersPosition();
 
             if (gameData == null)
                 gameData = Resources.Load<GameData>("GameDataDefault");
@@ -77,6 +83,16 @@ namespace Snake
         {
             CheckForGameOver();
         }
+
+        void SetContainersPosition()
+        {
+
+            arenaContainer.anchoredPosition = gameData.tileOffSet;
+            snakeContainer.anchoredPosition = gameData.tileOffSet;
+            blockContainer.anchoredPosition = gameData.tileOffSet;
+            cannonContaine.anchoredPosition = gameData.tileOffSet;
+        }
+
 
         void SetGame()
         {
@@ -118,7 +134,7 @@ namespace Snake
             {
                 for (int x = 0; x < gameData.arenaWidth; x++)
                 {
-                    newGameObject = Instantiate(MapTilePrefab, ArenaContainer) as GameObject;
+                    newGameObject = Instantiate(MapTilePrefab, arenaContainer) as GameObject;
 
                     //Use string build for more optimized code
                     StringBuilder tileName = new StringBuilder("arena ", 30);

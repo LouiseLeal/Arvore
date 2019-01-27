@@ -19,9 +19,10 @@ public class GameData : ScriptableObject
     public float cannonSpeed = 0.5f;
 
     [Header("Game parameters")]
-    public int tileSize = 20;
+    [HideInInspector]public float tileSize = 20;
     public int arenaHeight = 10;
     public int arenaWidth = 10;
+    [HideInInspector] public Vector2 tileOffSet;
 
     [Header("Snake parameters")]
     public int initialSnakeSize = 3;
