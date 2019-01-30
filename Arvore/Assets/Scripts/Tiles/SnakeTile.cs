@@ -23,7 +23,8 @@ namespace Snake
             image.sprite = spriteData.SnakeBody;
         }
 
-        public void SetSnake(Vector2 position, Vector2 tileSize, bool isHead)
+        //if Set position is already a valid tile
+        public void SetValidSnakeTile(Position position, Vector2 tileSize, bool isHead)
         {
             this.isHead = isHead;
 

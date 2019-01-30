@@ -92,4 +92,6 @@ MonoBehaviour:
   rectTransform: {fileID: 463894812819676067}
   x: 0
   y: 0
+  arenaTileColor: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
+  wallTileColor: {r: 0.14150941, g: 0.14150941, b: 0.14150941, a: 1}
   block: {fileID: 0}

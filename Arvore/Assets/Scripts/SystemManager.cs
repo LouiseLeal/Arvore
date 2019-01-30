@@ -33,6 +33,9 @@ namespace Snake
                 canvas = transform.parent.GetComponent<Canvas>();
 
             ChangeState(GameState.START);
+
+            //Desable othes panels
+            gameOver.SetPanel();
             gameOver.Enable(false);
         }
 

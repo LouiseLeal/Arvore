@@ -12,7 +12,7 @@ namespace Snake
         //Is set in Game system 
         public Button button;
 
-        private void Awake()
+        public void SetPanel()
         {
             images = GetComponentsInChildren<Image>();
             texts = GetComponentsInChildren<Text>();

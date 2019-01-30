@@ -21,11 +21,10 @@ namespace Snake
     public class GameManager : Singleton<GameManager>
     {
 
-
-
         [SerializeField] public GameData gameData;
-        [SerializeField] private GameObject MapTilePrefab;
-        [SerializeField] private BlocksSpawnManager BlocksManager;
+        [SerializeField] private GameObject mapTilePrefab;
+        [SerializeField] private BlocksSpawnManager blocksManager;
+        [SerializeField] private DefineInput defineInput;
 
         ArenaTile[,] arena;
 
@@ -49,6 +48,11 @@ namespace Snake
         [SerializeField] private RectTransform cannonContaine;
 
 
+        public void PreGame()
+        {
+            defineInput.finishDefineInput += StartGame;
+        }
+
         public void StartGame()
         {
           
@@ -64,11 +68,11 @@ namespace Snake
 
             arena = new ArenaTile[gameData.arenaWidth, gameData.arenaHeight];
 
-            BlocksManager.SetBlockChances(gameData.grayBlock, gameData.greenBlock,
+            blocksManager.SetBlockChances(gameData.grayBlock, gameData.greenBlock,
                                             gameData.blueBlock, gameData.redBlock);
 
 
-            BlocksManager.CreateBlockPool(5, tileSize);
+            blocksManager.CreateBlockPool(5, tileSize);
 
             CreateArena();
 
@@ -97,7 +101,7 @@ namespace Snake
         void SetGame()
         {
             Debug.Log("Reset Game");
-            BlocksManager.ResetBlocks();
+            blocksManager.ResetBlocks();
             SetBlock();
 
             //Declare before for the avoid garbage collector
@@ -134,7 +138,7 @@ namespace Snake
             {
                 for (int x = 0; x < gameData.arenaWidth; x++)
                 {
-                    newGameObject = Instantiate(MapTilePrefab, arenaContainer) as GameObject;
+                    newGameObject = Instantiate(mapTilePrefab, arenaContainer) as GameObject;
 
                     //Use string build for more optimized code
                     StringBuilder tileName = new StringBuilder("arena ", 30);
@@ -203,7 +207,7 @@ namespace Snake
             if (arena[random.x, random.y].GetArenaTileState() == ArenaTileState.EMPTY)
             {
 
-                Block block = BlocksManager.EnableBlock(random, arena[random.x,
+                Block block = blocksManager.EnableBlock(random, arena[random.x,
                                               random.y].GetCanvasPosition());
                 if (block == null)
                     return BlockType.INACTIVE;
@@ -226,7 +230,7 @@ namespace Snake
                     if (arena[newRandom.x, newRandom.y].GetArenaTileState() == ArenaTileState.EMPTY)
                     {
 
-                        var block = BlocksManager.EnableBlock(newRandom, arena[newRandom.x,
+                        var block = blocksManager.EnableBlock(newRandom, arena[newRandom.x,
                                                 newRandom.y].GetCanvasPosition());
 
                         arena[newRandom.x, newRandom.y].
@@ -245,7 +249,7 @@ namespace Snake
                     newRandom.y = y;
                     if (arena[newRandom.x, newRandom.y].GetArenaTileState() == ArenaTileState.EMPTY)
                     {
-                        var block = BlocksManager.EnableBlock(newRandom, arena[newRandom.x,
+                        var block = blocksManager.EnableBlock(newRandom, arena[newRandom.x,
                                                newRandom.y].GetCanvasPosition());
 
                         arena[newRandom.x, newRandom.y].
@@ -285,7 +289,7 @@ namespace Snake
                 blockType = arena[x, y].block.type;
 
                 //Desable eaten block
-                BlocksManager.DesableBlock(arena[x, y].block);
+                blocksManager.DesableBlock(arena[x, y].block);
                 //Enable a new block
                 SetBlock();
 
@@ -308,7 +312,7 @@ namespace Snake
 
         public Position GetNearBlockPosition(Position position)
         {
-            return BlocksManager.GetNearBlock(position);
+            return blocksManager.GetNearBlock(position);
         }
 
 
@@ -404,7 +408,7 @@ namespace Snake
 
         void SetGameOver(Snake snake)
         {
-            BlocksManager.ResetBlocks();
+            blocksManager.ResetBlocks();
             SystemManager.Instance.GameOver(snake);
             ResetArena();
             snake.isActive = false;

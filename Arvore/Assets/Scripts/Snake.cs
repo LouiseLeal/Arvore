@@ -94,7 +94,7 @@ namespace Snake
         }
 
 
-        public virtual void CreateSnake(int initialTileSize, int arenaHeight, Vector2 TileSize, float speed)
+        public virtual void CreateSnake(int initialTileCount, int arenaHeight, Vector2 TileSize, float speed)
         {
 
             //TODO do it in a more efficiente
@@ -106,6 +106,7 @@ namespace Snake
                 }
             }
 
+            //Set snake config
             snakeTiles = new List<SnakeTile>();
 
             this.inverseSpeed = speed;
@@ -115,6 +116,8 @@ namespace Snake
 
             currentDirection = SnakeDirection.RIGHT;
 
+
+            //Init creating snakes tiles
             var newSnakeTile = (Instantiate(snakeTilePrefab, this.transform)
                                         as GameObject).GetComponent<SnakeTile>();
 
@@ -122,36 +125,33 @@ namespace Snake
             //Define an rando y position of snake
             var snakeTilePositionY = UnityEngine.Random.Range(1, arenaHeight - 1);
             //Consider not position on wall;
-            var snakeTilePositionX = initialTileSize;
-            var snakeTilePosition = new Vector2(snakeTilePositionX, snakeTilePositionY);
+            var snakeTilePositionX = initialTileCount;
 
-            Position snakeTilePosition2;
-            snakeTilePosition2.x = snakeTilePositionX;
-            snakeTilePosition2.y = snakeTilePositionY;
+            Position snakeTilePosition;
+            snakeTilePosition.x = snakeTilePositionX;
+            snakeTilePosition.y = snakeTilePositionY;
 
-            if (!GameManager.Instance.IsEmptyArenaTile(snakeTilePosition2.x, snakeTilePosition2.y))
+            //If random tile is not available find the next one
+            if (!GameManager.Instance.IsEmptyArenaTile(snakeTilePosition.x, snakeTilePosition.y))
             {
-                snakeTilePosition2.y = GameManager.Instance.GetNextVerticalPosition(snakeTilePosition2).y;
+                snakeTilePosition.y = GameManager.Instance.GetNextVerticalPosition(snakeTilePosition).y;
             }
 
-            //Todo change
-            snakeTilePosition[0] = snakeTilePosition2.x;
-            snakeTilePosition[1] = snakeTilePosition2.y;
+            currentSize = initialTileCount;
 
-            currentSize = initialTileSize;
-
-            newSnakeTile.SetSnake(snakeTilePosition, TileSize, true);
+            newSnakeTile.SetValidSnakeTile(snakeTilePosition, TileSize, true);
 
             snakeTiles.Add(newSnakeTile);
 
-            for (int i = 1; i < initialTileSize; i++)
+            for (int i = 1; i < initialTileCount; i++)
             {
                 newSnakeTile = (Instantiate(snakeTilePrefab, this.transform)
                                         as GameObject).GetComponent<SnakeTile>();
 
                 snakeTilePosition.x = snakeTilePositionX - i;
 
-                newSnakeTile.SetSnake(snakeTilePosition, TileSize, false);
+                newSnakeTile.SetValidSnakeTile(snakeTilePosition, TileSize, false);
+                GameManager.Instance.SetArenaTileState(snakeTilePosition.x, snakeTilePosition.y, ArenaTileState.SNAKE);
 
                 snakeTiles.Add(newSnakeTile);
             }
@@ -283,12 +283,18 @@ namespace Snake
             Debug.Log("Gray effect");
             currentSize++;
 
-            Vector2 position = new Vector2(snakeLastTileInfo.x, snakeLastTileInfo.y);
+            Position position;
+            position.x = snakeLastTileInfo.x; 
+            position.y = snakeLastTileInfo.y;
 
 
             var newSnakeTile = Instantiate(snakeTilePrefab, this.transform).
                                                     GetComponent<SnakeTile>();
-            newSnakeTile.SetSnake(position, GameManager.Instance.tileSize, false);
+
+            //This tile is always valid because it replace the current tail tile,
+            //so a valid tile
+            newSnakeTile.SetValidSnakeTile(position, 
+                                           GameManager.Instance.tileSize, false);
 
             snakeTiles.Add(newSnakeTile);
         }

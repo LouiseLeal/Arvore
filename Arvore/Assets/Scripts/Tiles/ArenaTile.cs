@@ -14,6 +14,9 @@ namespace Snake
 
     public class ArenaTile : Tile
     {
+        [SerializeField] Color arenaTileColor;
+        [SerializeField] Color wallTileColor;
+
         ArenaTileState arenaTileState;
 
         //Store reference;
@@ -23,13 +26,13 @@ namespace Snake
         {
             image.sprite = spriteData.MapTile;
             arenaTileState = ArenaTileState.EMPTY;
-            image.color = Color.blue;
+            image.color = arenaTileColor;
         }
 
         public void SetWall()
         {
             arenaTileState = ArenaTileState.WALL;
-            image.sprite = spriteData.MapWall;
+            image.color = wallTileColor;
         }
 
         public Vector2 GetCanvasPosition() => rectTransform.anchoredPosition;
@@ -51,21 +54,21 @@ namespace Snake
                 block = null;
             }
 
-            //For DEBUG
-            switch (arenaTileState)
-            {
-                case ArenaTileState.EMPTY:
-                    image.color = Color.blue;
-                    break;
-                case ArenaTileState.WALL:
-                    break;
-                case ArenaTileState.SNAKE:
-                    image.color = Color.red;
-                    break;
-                case ArenaTileState.BLOCK:
-                    image.color = Color.white;
-                    break;
-            }
+            ////For DEBUG
+            //switch (arenaTileState)
+            //{
+            //    case ArenaTileState.EMPTY:
+            //        image.color = Color.blue;
+            //        break;
+            //    case ArenaTileState.WALL:
+            //        break;
+            //    case ArenaTileState.SNAKE:
+            //        image.color = Color.red;
+            //        break;
+            //    case ArenaTileState.BLOCK:
+            //        image.color = Color.white;
+            //        break;
+            //}
         }
     }
 }

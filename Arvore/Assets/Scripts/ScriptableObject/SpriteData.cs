@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 
 namespace Snake
@@ -20,6 +20,8 @@ namespace Snake
        public Sprite SnakeTail;
        public Sprite MapTile;
        public Sprite MapWall;
+
+	
 
         //public Sprite[] sprites;
 
