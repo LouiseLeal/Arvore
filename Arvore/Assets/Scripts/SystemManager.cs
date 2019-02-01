@@ -47,7 +47,7 @@ namespace Snake
                     GameSateStart();
                     break;
                 case GameState.GAME:
-                    GameManager.Instance.StartGame();
+                    GameManager.Instance.PreGame();
                     break;
                 case GameState.GAME_OVER:
                     break;

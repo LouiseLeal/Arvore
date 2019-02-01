@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,7 +37,11 @@ namespace Snake
         LastSnakeMoviment lastMoviment;
         private bool isAI = false;
 
-        public bool isActive;
+        public bool isActive =  false;
+
+        //Snakes Preset
+        [SerializeField] SnakesPresetsData snakesPresetsData;
+        public static List<int> UsedSnakesPresets = new List<int>();
 
         //TODO create a snake base
         protected virtual void Update()
@@ -156,8 +161,55 @@ namespace Snake
                 snakeTiles.Add(newSnakeTile);
             }
 
-            isActive = true;
+            //Set snakes presets variables
+            ChoosePresetCoroutine = StartCoroutine(CyclingPresets());
         }
+
+
+        #region SnakePreset
+
+        int index = 0;
+
+        //Variables for the snakes preset method
+        Coroutine ChoosePresetCoroutine;
+        Color currentSelectedColor;
+
+        //Avoid garbage colector
+        WaitForSeconds wait = new WaitForSeconds(0.5f);
+
+        IEnumerator CyclingPresets()
+        {
+
+            while (true)
+            {
+                currentSelectedColor = snakesPresetsData.colors[index];
+                TintSnake();
+
+                index++;
+
+                yield return wait;
+            }
+        }
+
+        private void TintSnake()
+        {
+            for (int i = 0; i < snakeTiles.Count; i++)
+            {
+                snakeTiles[i].TintTile(currentSelectedColor);
+            }
+        }
+
+        public void SelectSnakePreset()
+        {
+
+            if (ChoosePresetCoroutine != null)
+                StopCoroutine(ChoosePresetCoroutine);
+
+            UsedSnakesPresets.Add(index);
+
+        }
+
+        #endregion
 
         public virtual bool Move()
         {

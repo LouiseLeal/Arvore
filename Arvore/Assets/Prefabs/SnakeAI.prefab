@@ -51,3 +51,4 @@ MonoBehaviour:
   snakeTilePrefab: {fileID: 8351478874775052159, guid: 433dbf3adba7d4a8980a1725307b8e96,
     type: 3}
   isActive: 0
+  snakesPresetsData: {fileID: 11400000, guid: 1aa8106e7cb53417da6fb6de20bc690e, type: 2}

@@ -7,16 +7,17 @@ namespace Snake {
 
     public class SnakeAI : Snake
     {
-
-        public override void CreateSnake(int initialTileSize, int arenaHeight, Vector2 TileSize, float speed)
+       
+        public override void CreateSnake(int initialTileCount, int arenaHeight, Vector2 TileSize, float speed)
         {
-            base.CreateSnake(initialTileSize, arenaHeight, TileSize, speed);
+            base.CreateSnake(initialTileCount, arenaHeight, TileSize, speed);
             SetSnakeAI();
+            isActive = false;
         }
 
         protected override void Update()
         {
-            if (snakeTiles == null && !isActiveAndEnabled)
+            if (snakeTiles == null || !isActive)
                 return;
 
             nextMoveTime -= Time.deltaTime;
@@ -38,7 +39,6 @@ namespace Snake {
         void ChangeDirection()
         {
            
-
             var position = new Position();
             position.x = snakeTiles[0].x;
             position.y = snakeTiles[0].y;

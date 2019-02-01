@@ -111,5 +111,10 @@ namespace Snake
             position.y = y;
             return position;
         }
+
+        public void TintTile(Color currentSelectedColor)
+        {
+            image.color = currentSelectedColor;
+        }
     }
 }

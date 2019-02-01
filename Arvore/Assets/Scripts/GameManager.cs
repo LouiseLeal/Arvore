@@ -47,26 +47,38 @@ namespace Snake
         [SerializeField] private RectTransform blockContainer;
         [SerializeField] private RectTransform cannonContaine;
 
+        bool gameStarted = false;
 
         public void PreGame()
         {
+            //Get already setted data to set this game
+            tileSize = new Vector2(gameData.tileSize, gameData.tileSize);
+
+            CreateArena();
+
+            snakePlayerAmount = 0;
+            snakeAIAmount = 0;
+
+            defineInput.StartCheckingInput(); 
+
+            defineInput.CreatSnake += CreateNewSnakes;
+            defineInput.DefinedOneInput += SelectedSnakePreset;
             defineInput.finishDefineInput += StartGame;
         }
 
         public void StartGame()
         {
-          
-            snakeAmount = gameData.snakesPlayerAmount;
 
-            //Todo create an method to calculate it based on screen size
+            Debug.Log("StartGame");
+            //snakeAmount = gameData.snakesPlayerAmount;
+            
             tileSize = new Vector2(gameData.tileSize, gameData.tileSize);
 
             SetContainersPosition();
 
             if (gameData == null)
                 gameData = Resources.Load<GameData>("GameDataDefault");
-
-            arena = new ArenaTile[gameData.arenaWidth, gameData.arenaHeight];
+                
 
             blocksManager.SetBlockChances(gameData.grayBlock, gameData.greenBlock,
                                             gameData.blueBlock, gameData.redBlock);
@@ -74,18 +86,19 @@ namespace Snake
 
             blocksManager.CreateBlockPool(5, tileSize);
 
-            CreateArena();
-
             SetGame();
 
             cannon.SetTileSize(tileSize);
+
+            gameStarted = true;
         }
 
         //Check if a snake dies 
         // Makes it not evaluate in the same frame as the snakes dies
         private void Update()
         {
-            CheckForGameOver();
+            if(gameStarted)
+                CheckForGameOver();
         }
 
         void SetContainersPosition()
@@ -97,6 +110,34 @@ namespace Snake
             cannonContaine.anchoredPosition = gameData.tileOffSet;
         }
 
+        public void CreateAISankes()
+        {
+            for (int i = 0; i < snakePlayerAmount; i++)
+            {
+                //Instantiate pc snakes
+                var newSnakeAI = Instantiate(snakeAIPrefab, snakeContainer).GetComponent<SnakeAI>();
+                newSnakeAI.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
+                snakes.Add(newSnakeAI);
+            }
+
+            snakeAIAmount++;
+        }
+
+        public void CreateNewSnakes()
+        {
+            // Instatiate players snakes
+            var newSnake = Instantiate(snakePrefab, snakeContainer).GetComponent<Snake>();
+            newSnake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
+            snakes.Add(newSnake);
+
+            snakePlayerAmount++; 
+
+        }
+
+        public void SelectedSnakePreset()
+        {
+            snakes[snakes.Count - 1].SelectSnakePreset();
+        }
 
         void SetGame()
         {
@@ -104,28 +145,13 @@ namespace Snake
             blocksManager.ResetBlocks();
             SetBlock();
 
-            //Declare before for the avoid garbage collector
-            Snake newSnake;
-            SnakeAI newSnakeAI;
-
-
-            for (int i = 0; i < snakeAmount; i++)
-            {
-                // Instatiate players snakes
-                newSnake = Instantiate(snakePrefab, snakeContainer).GetComponent<Snake>();
-                newSnake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
-                snakes.Add(newSnake);
-
-                //Instantiate pc snakes
-                newSnakeAI = Instantiate(snakeAIPrefab, snakeContainer).GetComponent<SnakeAI>();
-                newSnakeAI.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
-                snakes.Add(newSnakeAI);
-            }
+          
             snakePlayerAmount = snakeAmount;
             snakeAIAmount = snakeAmount; 
         }
 
         #region GameSetting
+
         //Create arena programaticaly
         private void CreateArena()
         {
@@ -133,6 +159,8 @@ namespace Snake
             GameObject newGameObject;
             ArenaTile newTile;
             Vector2 newCanvasPosition = Vector2.zero;
+
+            arena = new ArenaTile[gameData.arenaWidth, gameData.arenaHeight];
 
             for (int y = 0; y < gameData.arenaHeight; y++)
             {
