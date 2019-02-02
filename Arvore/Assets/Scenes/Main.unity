@@ -658,7 +658,7 @@ MonoBehaviour:
   defineInput: {fileID: 1407920267}
   tileSize: {x: 0, y: 0}
   cannon: {fileID: 6855843780696447360}
-  snakePrefab: {fileID: 7620646066862999758, guid: 582194ea3fe594bcca238c6260b22858,
+  snakePlayerPrefab: {fileID: 2794698572726361230, guid: 582194ea3fe594bcca238c6260b22858,
     type: 3}
   snakeAIPrefab: {fileID: 1513933264170169708, guid: 2a980acb55bc54d04aae38bb87964ec9,
     type: 3}

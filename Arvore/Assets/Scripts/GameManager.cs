@@ -33,7 +33,7 @@ namespace Snake
         [SerializeField] Cannon cannon;
 
         [Header("Snakes Settings")]
-        [SerializeField] private Snake snakePrefab;
+        [SerializeField] private SnakePlayer snakePlayerPrefab;
         [SerializeField] private SnakeAI snakeAIPrefab;
         List<Snake> snakes = new List<Snake>();
         int snakeAmount;
@@ -131,17 +131,11 @@ namespace Snake
             else
             {
                 // Instatiate players snakes
-                newSnake = Instantiate(snakePrefab, snakeContainer).GetComponent<Snake>();
+                newSnake = Instantiate(snakePlayerPrefab, snakeContainer).GetComponent<Snake>();
                 snakePlayerTotal++;
             }
           
             newSnake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
-
-            if (!isAI)
-                newSnake.StartCiclyingPreset();
-            else
-                newSnake.SetActive(true);
-
             snakes.Add(newSnake);
         }
 
@@ -376,7 +370,7 @@ namespace Snake
 
         public void FireBullet(Snake snake)
         {
-            Snake nearSnake =  GetNearSnakeHead(snake, gameData.rangeConnon);
+            var nearSnake =  GetNearSnakeHead(snake, gameData.rangeConnon);
             cannon.ShootCannon(snake,nearSnake, gameData.cannonThreshold, 
                                                         gameData.cannonSpeed);
         }
@@ -399,7 +393,11 @@ namespace Snake
 
             int rand = UnityEngine.Random.Range(0, inRangeSnakes.Count - 1);
 
-            return inRangeSnakes[rand];
+            return inRangeSnakes[rand];  //public void StartCiclyingPreset()
+                                         //{
+                                         //    //Set snakes presets variables
+                                         //    ChoosePresetCoroutine = StartCoroutine(CyclingPresets());
+                                         //}
 
         }
 
@@ -456,7 +454,7 @@ namespace Snake
             ResetArena();
             snake.isActive = false;
         }
-
+        
         void ResetArena()
         {
             for (int y = 0; y < gameData.arenaHeight; y++)

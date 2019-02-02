@@ -14,7 +14,7 @@ namespace Snake {
 
             base.CreateSnake(initialTileCount, arenaHeight, TileSize, speed);
             SetSnakeAI();
-            isActive = false;
+            isActive = true;
         }
 
         protected override void Update()
