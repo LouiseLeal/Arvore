@@ -43,6 +43,29 @@ namespace Snake
         [SerializeField] SnakesPresetsData snakesPresetsData;
         public static List<int> UsedSnakesPresets = new List<int>();
 
+
+        #region GetterSetter
+        public void SetSnakeAI()
+        {
+            isAI = true;
+        }
+
+        public bool IsSnakeAI()
+        {
+            return isAI;
+        }
+
+        public void SetActive(bool active)
+        {
+            isActive = active;
+        }
+
+        public bool IsActive()
+        {
+            return isActive;
+        }
+        #endregion
+
         //TODO create a snake base
         protected virtual void Update()
         {
@@ -161,8 +184,6 @@ namespace Snake
                 snakeTiles.Add(newSnakeTile);
             }
 
-            //Set snakes presets variables
-            ChoosePresetCoroutine = StartCoroutine(CyclingPresets());
         }
 
 
@@ -176,6 +197,12 @@ namespace Snake
 
         //Avoid garbage colector
         WaitForSeconds wait = new WaitForSeconds(0.5f);
+
+        public void StartCiclyingPreset()
+        {
+            //Set snakes presets variables
+            ChoosePresetCoroutine = StartCoroutine(CyclingPresets());
+        }
 
         IEnumerator CyclingPresets()
         {
@@ -443,15 +470,6 @@ namespace Snake
 
         #endregion
 
-        public void SetSnakeAI()
-        {
-            isAI = true;
-        }
-
-        public bool IsSnakeAI()
-        {
-            return isAI;
-        }
     }
 }
 #pragma warning restore CS0649

@@ -37,8 +37,8 @@ namespace Snake
         [SerializeField] private SnakeAI snakeAIPrefab;
         List<Snake> snakes = new List<Snake>();
         int snakeAmount;
-        int snakeAIAmount = 0;
-        int snakePlayerAmount = 0;
+        int snakeAITotal = 0;
+        int snakePlayerTotal = 0;
 
         [Header("Containers")]
 
@@ -49,6 +49,25 @@ namespace Snake
 
         bool gameStarted = false;
 
+
+        #region Unity Methos
+        public void Awake()
+        {
+            //Todo Is Needed ??
+            if (gameData == null)
+                gameData = Resources.Load<GameData>("GameDataDefault");
+        }
+
+        //Check if a snake dies 
+        // Makes it not evaluate in the same frame as the snakes dies
+        private void Update()
+        {
+            if (gameStarted)
+                CheckForGameOver();
+        }
+
+        #endregion
+
         public void PreGame()
         {
             //Get already setted data to set this game
@@ -56,14 +75,16 @@ namespace Snake
 
             CreateArena();
 
-            snakePlayerAmount = 0;
-            snakeAIAmount = 0;
+            snakePlayerTotal = 0;
+            snakeAITotal = 0;
 
             defineInput.StartCheckingInput(); 
 
-            defineInput.CreatSnake += CreateNewSnakes;
+            defineInput.CreatSnake += () => CreateNewSnake(false);
             defineInput.DefinedOneInput += SelectedSnakePreset;
             defineInput.finishDefineInput += StartGame;
+
+
         }
 
         public void StartGame()
@@ -76,10 +97,6 @@ namespace Snake
 
             SetContainersPosition();
 
-            if (gameData == null)
-                gameData = Resources.Load<GameData>("GameDataDefault");
-                
-
             blocksManager.SetBlockChances(gameData.grayBlock, gameData.greenBlock,
                                             gameData.blueBlock, gameData.redBlock);
 
@@ -88,18 +105,9 @@ namespace Snake
 
             SetGame();
 
-            cannon.SetTileSize(tileSize);
-
             gameStarted = true;
         }
-
-        //Check if a snake dies 
-        // Makes it not evaluate in the same frame as the snakes dies
-        private void Update()
-        {
-            if(gameStarted)
-                CheckForGameOver();
-        }
+       
 
         void SetContainersPosition()
         {
@@ -110,28 +118,31 @@ namespace Snake
             cannonContaine.anchoredPosition = gameData.tileOffSet;
         }
 
-        public void CreateAISankes()
+
+        public void CreateNewSnake(bool isAI)
         {
-            for (int i = 0; i < snakePlayerAmount; i++)
+            Snake newSnake = null;
+            if (isAI)
             {
-                //Instantiate pc snakes
-                var newSnakeAI = Instantiate(snakeAIPrefab, snakeContainer).GetComponent<SnakeAI>();
-                newSnakeAI.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
-                snakes.Add(newSnakeAI);
+                // Instatiate players snakes
+                newSnake = Instantiate(snakeAIPrefab, snakeContainer).GetComponent<Snake>();
+                snakeAITotal++;
             }
-
-            snakeAIAmount++;
-        }
-
-        public void CreateNewSnakes()
-        {
-            // Instatiate players snakes
-            var newSnake = Instantiate(snakePrefab, snakeContainer).GetComponent<Snake>();
+            else
+            {
+                // Instatiate players snakes
+                newSnake = Instantiate(snakePrefab, snakeContainer).GetComponent<Snake>();
+                snakePlayerTotal++;
+            }
+          
             newSnake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
+
+            if (!isAI)
+                newSnake.StartCiclyingPreset();
+            else
+                newSnake.SetActive(true);
+
             snakes.Add(newSnake);
-
-            snakePlayerAmount++; 
-
         }
 
         public void SelectedSnakePreset()
@@ -141,13 +152,17 @@ namespace Snake
 
         void SetGame()
         {
-            Debug.Log("Reset Game");
+            Debug.Log("SetGame");
             blocksManager.ResetBlocks();
             SetBlock();
 
-          
-            snakePlayerAmount = snakeAmount;
-            snakeAIAmount = snakeAmount; 
+            cannon.SetTileSize(tileSize);
+
+            for (int i = 0; i < snakePlayerTotal; i++)
+            {
+                snakes[i].SetActive(true);
+                CreateNewSnake(isAI: true);
+            }
         }
 
         #region GameSetting
@@ -405,11 +420,11 @@ namespace Snake
 
             if (snake.IsSnakeAI())
             {
-                snakeAIAmount--;
+                snakeAITotal--;
             }
             else
             {
-                snakePlayerAmount--;
+                snakePlayerTotal--;
             }
 
             snake.Die();
@@ -427,7 +442,7 @@ namespace Snake
                 SetGameOver(snakes[0]);
                 snakes.Remove(snakes[0]);
             }
-            else if (snakePlayerAmount > 1) { 
+            else if (snakePlayerTotal > 1) { 
                 CanFastFoward = true;
             }
         }

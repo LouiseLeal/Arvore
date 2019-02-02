@@ -10,6 +10,8 @@ namespace Snake {
        
         public override void CreateSnake(int initialTileCount, int arenaHeight, Vector2 TileSize, float speed)
         {
+            Debug.Log("Create an snake AI");
+
             base.CreateSnake(initialTileCount, arenaHeight, TileSize, speed);
             SetSnakeAI();
             isActive = false;
