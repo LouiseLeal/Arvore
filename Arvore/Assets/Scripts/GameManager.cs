@@ -80,7 +80,7 @@ namespace Snake
 
             defineInput.StartCheckingInput(); 
 
-            defineInput.CreatSnake += () => CreateNewSnake(false);
+            defineInput.CreatSnake += (k) => CreatePlayerSnake(k);
             defineInput.DefinedOneInput += SelectedSnakePreset;
             defineInput.finishDefineInput += StartGame;
 
@@ -118,7 +118,7 @@ namespace Snake
             cannonContaine.anchoredPosition = gameData.tileOffSet;
         }
 
-
+        //Todo change it for use on only ai snakes
         public void CreateNewSnake(bool isAI)
         {
             Snake newSnake = null;
@@ -139,6 +139,18 @@ namespace Snake
             snakes.Add(newSnake);
         }
 
+        public void CreatePlayerSnake(KeyCode[] input)
+        {
+            // Instatiate players snakes
+            var newSnake = Instantiate(snakePlayerPrefab, snakeContainer).GetComponent<SnakePlayer>();
+            newSnake.SetInput(input);
+            newSnake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
+            snakes.Add(newSnake);
+
+
+            snakePlayerTotal++;
+        }
+
         public void SelectedSnakePreset()
         {
             snakes[snakes.Count - 1].SelectSnakePreset();
@@ -155,6 +167,7 @@ namespace Snake
             for (int i = 0; i < snakePlayerTotal; i++)
             {
                 snakes[i].SetActive(true);
+                //Create an AI snake for every player snake
                 CreateNewSnake(isAI: true);
             }
         }
@@ -199,6 +212,7 @@ namespace Snake
                 }
             }
         }
+
 
         public Position GetNextVerticalPosition(Position position)
         {

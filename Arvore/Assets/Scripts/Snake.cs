@@ -77,8 +77,6 @@ namespace Snake
             this.inverseSpeed = speed;
             nextMoveTime = speed;
 
-            canCheckInput = true;
-
             currentDirection = SnakeDirection.RIGHT;
 
 

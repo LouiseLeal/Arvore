@@ -8,13 +8,6 @@ using UnityEngine;
 namespace Snake
 {
 
-   
-
-    public struct KeyCodesInput
-    {
-        KeyCode rightKey;
-        KeyCode leftKey;
-    }
 
     public class SnakePlayer : Snake
     {
@@ -22,6 +15,14 @@ namespace Snake
         //Snakes Preset
         [SerializeField] SnakesPresetsData snakesPresetsData;
         public static List<int> UsedSnakesPresets = new List<int>();
+        KeyCode[] input;
+
+        private void Awake()
+        {
+            input = new KeyCode[2];
+            input[0] = KeyCode.None;
+            input[1] = KeyCode.None;
+        }
 
 
         protected override void Update()
@@ -32,7 +33,6 @@ namespace Snake
             CheckForInput();
 
             nextMoveTime -= Time.deltaTime;
-
             if (nextMoveTime < 0)
             {
                 CheckForMove();
@@ -43,20 +43,14 @@ namespace Snake
         void CheckForInput()
         {
 
-            if (canCheckInput)
+            if (canCheckInput )
             {
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    Debug.Log("SPACE");
-                    canCheckInput = false;
-                }
-
-                if (Input.GetKeyDown(KeyCode.D))
+                if (Input.GetKeyDown(input[0]))
                 {
                     Rotate(clockwise: true);
                     canCheckInput = false;
                 }
-                else if (Input.GetKeyDown(KeyCode.A))
+                else if (Input.GetKeyDown(input[1]))
                 {
                     Rotate(clockwise: false);
                     canCheckInput = false;
@@ -69,6 +63,12 @@ namespace Snake
         {
             base.CreateSnake(initialTileCount, arenaHeight, TileSize, speed);
             ChoosePresetCoroutine = StartCoroutine(CyclingPresets());
+        }
+
+        public void SetInput(KeyCode[] input)
+        {
+            this.input = input;
+            canCheckInput = true;
         }
 
 

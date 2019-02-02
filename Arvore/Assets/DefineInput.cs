@@ -25,7 +25,7 @@ namespace Snake
     {
         public Action finishDefineInput;
         public Action DefinedOneInput;
-        public Action CreatSnake;
+        public Action<KeyCode[]> CreatSnake;
 
         public List<KeyCode[]> definedInputs = new List<KeyCode[]>();
         private List<KeyCode> usedKeys = new List<KeyCode>();
@@ -77,17 +77,18 @@ namespace Snake
 
                             //The smaller weight is the left key the 
                             //other will be the right
-                            if (key1Weight > key2Weight)
+                            if (key1Weight < key2Weight)
                                 keyCodes = new KeyCode[2] { secondKey, firstKey };
                             else
                                 keyCodes = new KeyCode[2] { firstKey, secondKey };
 
-                            keyCodes = new KeyCode[2] { firstKey, secondKey };
+                            //keyCodes = new KeyCode[2] { firstKey, secondKey };
+                            //Todo see if its needed
                             definedInputs.Add(keyCodes);
 
                             inputState = InputState.definedInput;
 
-                            CreatSnake?.Invoke();
+                            CreatSnake?.Invoke(keyCodes);
 
                             Debug.Log("keys " + definedInputs[definedInputs.Count - 1][0].ToString()
                                  + " " + definedInputs[definedInputs.Count - 1][1].ToString());
