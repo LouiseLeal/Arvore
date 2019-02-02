@@ -1,37 +1,40 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class StartGame : MonoBehaviour
+
+namespace Snake
 {
-    [SerializeField] public Button button;
-    [SerializeField] public Image startPanel;
-    Image[] images;
-    Text[] texts;
-
-    private void Awake()
+    public class StartGame : MonoBehaviour
     {
-        images =GetComponentsInChildren<Image>();
-        texts = GetComponentsInChildren<Text>();
-    }
+        [SerializeField] private Image panelImage;
+        [SerializeField] public Button changeStateButton;
 
-    public void Enable(bool enable)
-    {
-        startPanel.enabled = enable;
-        if (images != null)
+        Image[] images;
+        Text[] texts;
+
+        private void Awake()
         {
-            for (int i = 0; i < images.Length; i++)
-            {
-                images[i].enabled = enable;
-            }
+            images = GetComponentsInChildren<Image>();
+            texts = GetComponentsInChildren<Text>();
         }
-
-        if (texts != null)
+       
+        public  void Enable(bool enable)
         {
-            for (int i = 0; i < texts.Length; i++)
+
+            if (images != null)
             {
-                texts[i].enabled = enable;
+                for (int i = 0; i < images.Length; i++)
+                {
+                    images[i].enabled = enable;
+                }
+            }
+
+            if (texts != null)
+            {
+                for (int i = 0; i < texts.Length; i++)
+                {
+                    texts[i].enabled = enable;
+                }
             }
         }
     }

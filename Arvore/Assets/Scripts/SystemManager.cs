@@ -9,6 +9,7 @@ namespace Snake
     enum GameState
     {
         START,
+        DEFINE_INPUT,
         GAME,
         GAME_OVER,
         MENU
@@ -18,8 +19,9 @@ namespace Snake
     {
         GameState gameState;
 
-        [SerializeField] StartGame startGame;
-        [SerializeField] GameOver gameOver;
+        [SerializeField] StartGame startGamePanel;
+        [SerializeField] BasicPanel defineSnakes;
+        [SerializeField] GameOver gameOverPanel;
 
         [SerializeField] GameData gameData;
         [SerializeField] Canvas canvas;
@@ -35,8 +37,9 @@ namespace Snake
             ChangeState(GameState.START);
 
             //Desable othes panels
-            gameOver.SetPanel();
-            gameOver.Enable(false);
+            gameOverPanel.SetPanel();
+
+            defineSnakes.SetPanel();
         }
 
         void ChangeState(GameState state)
@@ -46,29 +49,65 @@ namespace Snake
                 case GameState.START:
                     GameSateStart();
                     break;
+                case GameState.DEFINE_INPUT:
+                    DefineSnakes();
+                    break;
                 case GameState.GAME:
-                    GameManager.Instance.PreGame();
+                    GameManager.Instance.StartGame();
                     break;
                 case GameState.GAME_OVER:
                     break;
                 case GameState.MENU:
                     break;
+                
             }
         }
-       
+
 
         void GameSateStart()
         {
             Vector2 tileSize = CalculeteTileSize();
             gameState = GameState.START;
-            startGame.Enable(true);
+            startGamePanel.Enable(true);
 
-            startGame.button.onClick.AddListener(() => {
+            startGamePanel.changeStateButton.onClick.AddListener(() => {
+                Debug.Log("StartStat");
+                ChangeState(GameState.DEFINE_INPUT);
+                startGamePanel.Enable(false);
+                startGamePanel.changeStateButton.onClick.RemoveAllListeners();
+
+            });
+        }
+
+        public void DefineSnakes()
+        {
+            gameState = GameState.DEFINE_INPUT;
+            defineSnakes.Enable(true);
+
+            GameManager.Instance.PreGame();
+
+            //Todo see if this can be simplified
+            defineSnakes.changeStateButton.onClick.AddListener(() => {
 
                 ChangeState(GameState.GAME);
-                startGame.Enable(false);
-                startGame.button.onClick.RemoveAllListeners();
+                defineSnakes.Enable(false);
+                defineSnakes.changeStateButton.onClick.RemoveAllListeners();
 
+            });
+
+        }
+
+
+        public void GameOver(Snake snake)
+        {
+            gameState = GameState.GAME_OVER;
+            gameOverPanel.StartGameOver(snake);
+
+            gameOverPanel.changeStateButton.onClick.AddListener(() => {
+
+                ChangeState(GameState.START);
+                gameOverPanel.Enable(false);
+                gameOverPanel.changeStateButton.onClick.RemoveAllListeners();
             });
 
         }
@@ -102,20 +141,6 @@ namespace Snake
             }
 
             return tileSize;
-        }
-
-        public void GameOver(Snake snake)
-        {
-            gameState = GameState.GAME_OVER;
-            gameOver.StartGameOver(snake);
-
-            gameOver.button.onClick.AddListener(() => {
-
-                ChangeState(GameState.START);
-                gameOver.Enable(false);
-                gameOver.button.onClick.RemoveAllListeners();
-            });
-
         }
     }
 }

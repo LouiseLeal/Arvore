@@ -247,7 +247,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d73e0e55fb10e420eaff4851ffe93f22, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  button: {fileID: 3343352494006122681}
+  changeStateButton: {fileID: 3343352494006122681}
+  panelImage: {fileID: 4209571753038567126}
 --- !u!1 &9165066036947694104
 GameObject:
   m_ObjectHideFlags: 0
