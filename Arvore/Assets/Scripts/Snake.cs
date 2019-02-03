@@ -317,7 +317,8 @@ namespace Snake
                 Destroy(snakeTiles[i].gameObject);
             }
 
-            snakeTiles = null;
+            //reset list
+            snakeTiles = new List<SnakeTile>();
             this.enabled = false;
 
             Destroy(gameObject);

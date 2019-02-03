@@ -33,7 +33,7 @@ namespace Snake
 
         private KeyCode firstKey;
         private KeyCode secondKey;
-        private KeyCode[] keyCodes ;
+        private KeyCode[] keyCodes;
         private float pressTime;
 
         //Debug
@@ -42,10 +42,10 @@ namespace Snake
         public Text text3;
 
         InputState inputState = InputState.none;
-        
+
 
         public void Start()
-        { 
+        {
             inputState = InputState.getFirtKey;
         }
 
@@ -66,7 +66,7 @@ namespace Snake
                     var aux1 = Input.GetKey(secondKey);
 
                     //Todo maybe ?
-                    if (inputState == InputState.isWaitingToDefine  && 
+                    if (inputState == InputState.isWaitingToDefine &&
                             (Input.GetKey(firstKey) && Input.GetKey(secondKey)))
                     {
                         //if is pressed for 1 second confirm defined keys
@@ -97,7 +97,7 @@ namespace Snake
                     }
                     //This wait to the keys release to define the snake preset
                     else if (inputState == InputState.definedInput &&
-                                        (!Input.GetKey(firstKey) || 
+                                        (!Input.GetKey(firstKey) ||
                                          !Input.GetKey(secondKey)))
                     {
                         Debug.Log("Is comming here?");
@@ -105,7 +105,7 @@ namespace Snake
                         inputState = InputState.getFirtKey;
                     }
                     //This means that the keys were not hold for the needed time
-                    else if(inputState != InputState.definedInput)
+                    else if (inputState != InputState.definedInput)
                     {
                         //Take out keys from usedkeys list, that way they will be
                         //avaible again;
@@ -117,25 +117,35 @@ namespace Snake
                         secondKey = KeyCode.None;
 
                         pressTime = 0;
-                       
+
                     }
                 }
             }
         }
 
+        public void RemoveAllEvents()
+        {
+            finishDefineInput = null;
+            DefinedOneInput = null;
+            CreatSnake = null;
+        }
+
         public void StartCheckingInput()
         {
+            //Reset Lists
+            usedKeys = new List<KeyCode>();
+            definedInputs = new List<KeyCode[]>();
             isDefiningInputs = true;
         }
 
         void OnGUI()
         {
             Event e = Event.current;
-            if ((inputState != InputState.isWaitingToDefine && 
-                                inputState != InputState.definedInput ) && 
+            if ((inputState != InputState.isWaitingToDefine &&
+                                inputState != InputState.definedInput) &&
                                     e.isKey && e.keyCode != KeyCode.None)
             {
-                if(IsAvaibleKey(e.keyCode))
+                if (IsAvaibleKey(e.keyCode))
                     AddKey(e.keyCode);
             }
         }
@@ -143,14 +153,15 @@ namespace Snake
         private void AddKey(KeyCode key)
         {
             //Debug.Log("Add key" + key);
-            if (inputState == InputState.getFirtKey) 
+            if (inputState == InputState.getFirtKey)
             {
                 Debug.Log("Add key" + key);
                 firstKey = key;
                 usedKeys.Add(key);
                 inputState = InputState.getSecondKey;
 
-            }else if (inputState == InputState.getSecondKey)
+            }
+            else if (inputState == InputState.getSecondKey)
             {
                 Debug.Log("Add secondKey" + key);
                 secondKey = key;
@@ -162,7 +173,7 @@ namespace Snake
 
 
         private bool IsAvaibleKey(KeyCode key)
-        { 
+        {
             for (int i = 0; i < usedKeys.Count; i++)
             {
                 if (key == usedKeys[i])

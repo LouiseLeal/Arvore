@@ -31,6 +31,8 @@ namespace Snake
             changeStateButton.onClick.RemoveAllListeners();
         }
 
+        //Desable component are more performatic than deactivate the entire 
+        //game object
         public virtual void Enable(bool enable)
         {
 

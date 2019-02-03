@@ -6,10 +6,6 @@ namespace Snake
 {
     public class GameOver : BasicPanel
     {
-        Image[] images;
-        Text[] texts;
-
-      
         public void StartGameOver(Snake snake)
         {
             Enable(true);

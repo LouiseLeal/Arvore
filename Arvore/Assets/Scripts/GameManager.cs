@@ -35,8 +35,7 @@ namespace Snake
         [Header("Snakes Settings")]
         [SerializeField] private SnakePlayer snakePlayerPrefab;
         [SerializeField] private SnakeAI snakeAIPrefab;
-        List<Snake> snakes = new List<Snake>();
-        int snakeAmount;
+        List<Snake> snakes;
         int snakeAITotal = 0;
         int snakePlayerTotal = 0;
 
@@ -50,7 +49,7 @@ namespace Snake
         bool gameStarted = false;
 
 
-        #region Unity Methos
+        #region Unity Methods
         public void Awake()
         {
             //Todo Is Needed ??
@@ -61,7 +60,7 @@ namespace Snake
         //Check if a snake dies 
         // Makes it not evaluate in the same frame as the snakes dies
         private void Update()
-        {
+        { //Todo why this not work
             if (gameStarted)
                 CheckForGameOver();
         }
@@ -70,6 +69,8 @@ namespace Snake
 
         public void PreGame()
         {
+            gameStarted = false;
+
             //Get already setted data to set this game
             tileSize = new Vector2(gameData.tileSize, gameData.tileSize);
 
@@ -78,9 +79,13 @@ namespace Snake
             snakePlayerTotal = 0;
             snakeAITotal = 0;
 
-            defineInput.StartCheckingInput(); 
+            snakes = new List<Snake>();
 
-            defineInput.CreatSnake += (k) => CreatePlayerSnake(k);
+            defineInput.StartCheckingInput();
+
+            defineInput.RemoveAllEvents();
+
+            defineInput.CreatSnake += CreatePlayerSnake;
             defineInput.DefinedOneInput += SelectedSnakePreset;
             defineInput.finishDefineInput += StartGame;
 
@@ -177,6 +182,7 @@ namespace Snake
         //Create arena programaticaly
         private void CreateArena()
         {
+         
             //set variables before for the avoid garbage collection
             GameObject newGameObject;
             ArenaTile newTile;
@@ -407,18 +413,9 @@ namespace Snake
 
             int rand = UnityEngine.Random.Range(0, inRangeSnakes.Count - 1);
 
-            return inRangeSnakes[rand];  //public void StartCiclyingPreset()
-                                         //{
-                                         //    //Set snakes presets variables
-                                         //    ChoosePresetCoroutine = StartCoroutine(CyclingPresets());
-                                         //}
+            return inRangeSnakes[rand];
 
         }
-
-        //todo create an script
-
-
-
 
         #endregion
 
@@ -459,14 +456,15 @@ namespace Snake
             }
         }
 
-
-
         void SetGameOver(Snake snake)
         {
-            blocksManager.ResetBlocks();
             SystemManager.Instance.GameOver(snake);
-            ResetArena();
             snake.isActive = false;
+
+            blocksManager.ResetBlocks();
+            ResetArena();
+            snakeAITotal = 0;
+            snakePlayerTotal = 0;
         }
         
         void ResetArena()
