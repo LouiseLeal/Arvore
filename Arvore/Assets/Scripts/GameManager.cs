@@ -75,6 +75,7 @@ namespace Snake
             tileSize = new Vector2(gameData.tileSize, gameData.tileSize);
 
             CreateArena();
+            SetContainersPosition();
 
             snakePlayerTotal = 0;
             snakeAITotal = 0;
@@ -100,7 +101,7 @@ namespace Snake
             
             tileSize = new Vector2(gameData.tileSize, gameData.tileSize);
 
-            SetContainersPosition();
+
 
             blocksManager.SetBlockChances(gameData.grayBlock, gameData.greenBlock,
                                             gameData.blueBlock, gameData.redBlock);
@@ -217,6 +218,7 @@ namespace Snake
                     arena[x, y] = newTile;
                 }
             }
+
         }
 
 

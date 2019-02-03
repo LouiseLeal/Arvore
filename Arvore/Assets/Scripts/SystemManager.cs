@@ -38,8 +38,8 @@ namespace Snake
 
             //Desable othes panels
             gameOverPanel.SetPanel();
-
             defineSnakes.SetPanel();
+
         }
 
         void ChangeState(GameState state)
@@ -66,6 +66,9 @@ namespace Snake
 
         void GameSateStart()
         {
+            if (!startGamePanel.gameObject.activeSelf)
+                startGamePanel.gameObject.SetActive(true);
+
             Vector2 tileSize = CalculeteTileSize();
             gameState = GameState.START;
             startGamePanel.Enable(true);
@@ -81,6 +84,9 @@ namespace Snake
 
         public void DefineSnakes()
         {
+            if (!defineSnakes.gameObject.activeSelf)
+                defineSnakes.gameObject.SetActive(true); 
+
             gameState = GameState.DEFINE_INPUT;
             defineSnakes.Enable(true);
 
@@ -100,6 +106,9 @@ namespace Snake
 
         public void GameOver(Snake snake)
         {
+            if (!gameOverPanel.gameObject.activeSelf)
+                gameOverPanel.gameObject.SetActive(true);
+
             gameState = GameState.GAME_OVER;
             gameOverPanel.StartGameOver(snake);
 
