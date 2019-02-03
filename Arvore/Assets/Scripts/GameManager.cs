@@ -48,6 +48,10 @@ namespace Snake
 
         bool gameStarted = false;
 
+        //OBS : The number maximum of selected snakes will be:
+        // the number of tiles - 3 (2 becaus of the wall and another one for space) 
+        //devide by 2(half of player snakes and half for AI snakes). 
+        int MaxSnakes = 0;
 
         #region Unity Methods
         public void Awake()
@@ -81,6 +85,7 @@ namespace Snake
             snakeAITotal = 0;
 
             snakes = new List<Snake>();
+            MaxSnakes = (gameData.arenaHeight - 3) / 2;
 
             defineInput.StartCheckingInput();
 
@@ -125,29 +130,22 @@ namespace Snake
         }
 
         //Todo change it for use on only ai snakes
-        public void CreateNewSnake(bool isAI)
+        public void CreateAISnake()
         {
-            Snake newSnake = null;
-            if (isAI)
-            {
-                // Instatiate players snakes
-                newSnake = Instantiate(snakeAIPrefab, snakeContainer).GetComponent<Snake>();
-                snakeAITotal++;
-            }
-            else
-            {
-                // Instatiate players snakes
-                newSnake = Instantiate(snakePlayerPrefab, snakeContainer).GetComponent<Snake>();
-                snakePlayerTotal++;
-            }
-          
+            var newSnake = Instantiate(snakeAIPrefab, snakeContainer).GetComponent<Snake>();
             newSnake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
+
             snakes.Add(newSnake);
+            snakeAITotal++;
         }
 
+        // Instatiate players snakes
         public void CreatePlayerSnake(KeyCode[] input)
         {
-            // Instatiate players snakes
+            Debug.Log(" snakePlayer " + snakePlayerTotal + " " + MaxSnakes);
+            if (snakePlayerTotal >= MaxSnakes)
+                return;
+
             var newSnake = Instantiate(snakePlayerPrefab, snakeContainer).GetComponent<SnakePlayer>();
             newSnake.SetInput(input);
             newSnake.CreateSnake(gameData.initialSnakeSize, gameData.arenaHeight, tileSize, gameData.snakeSpeed);
@@ -174,8 +172,10 @@ namespace Snake
             {
                 snakes[i].SetActive(true);
                 //Create an AI snake for every player snake
-                CreateNewSnake(isAI: true);
+                CreateAISnake();
             }
+
+            snakes[0].ResetUsedColors();
         }
 
         #region GameSetting

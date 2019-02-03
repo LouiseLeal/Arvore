@@ -27,7 +27,7 @@ namespace Snake
         public Action DefinedOneInput;
         public Action<KeyCode[]> CreatSnake;
 
-        public List<KeyCode[]> definedInputs = new List<KeyCode[]>();
+       //public List<KeyCode[]> definedInputs = new List<KeyCode[]>();
         private List<KeyCode> usedKeys = new List<KeyCode>();
         private bool isDefiningInputs;
 
@@ -84,14 +84,14 @@ namespace Snake
 
                             //keyCodes = new KeyCode[2] { firstKey, secondKey };
                             //Todo see if its needed
-                            definedInputs.Add(keyCodes);
+                            //definedInputs.Add(keyCodes);
 
                             inputState = InputState.definedInput;
 
                             CreatSnake?.Invoke(keyCodes);
 
-                            Debug.Log("keys " + definedInputs[definedInputs.Count - 1][0].ToString()
-                                 + " " + definedInputs[definedInputs.Count - 1][1].ToString());
+                            //Debug.Log("keys " + definedInputs[definedInputs.Count - 1][0].ToString()
+                                 //+ " " + definedInputs[definedInputs.Count - 1][1].ToString());
 
                         }
                     }
@@ -100,7 +100,6 @@ namespace Snake
                                         (!Input.GetKey(firstKey) ||
                                          !Input.GetKey(secondKey)))
                     {
-                        Debug.Log("Is comming here?");
                         DefinedOneInput?.Invoke();
                         inputState = InputState.getFirtKey;
                     }
@@ -134,7 +133,7 @@ namespace Snake
         {
             //Reset Lists
             usedKeys = new List<KeyCode>();
-            definedInputs = new List<KeyCode[]>();
+            //definedInputs = new List<KeyCode[]>();
             isDefiningInputs = true;
         }
 

@@ -12,9 +12,8 @@ namespace Snake
     public class SnakePlayer : Snake
     {
 
-        //Snakes Preset
-        [SerializeField] SnakesPresetsData snakesPresetsData;
-        public static List<int> UsedSnakesPresets = new List<int>();
+
+        //public static List<int> UsedSnakesPresets = new List<int>();
         KeyCode[] input;
 
         private void Awake()
@@ -74,45 +73,38 @@ namespace Snake
 
         #region SnakePreset
 
-        int index = 0;
-
         //Variables for the snakes preset method
         Coroutine ChoosePresetCoroutine;
-        Color currentSelectedColor;
 
         //Avoid garbage colector
         WaitForSeconds wait = new WaitForSeconds(0.5f);
         IEnumerator CyclingPresets()
         {
-
+            indexSelectedColor = 0;
             while (true)
             {
-                currentSelectedColor = snakesPresetsData.colors[index];
-                TintSnake();
+                if (IsColorIndexUsed(indexSelectedColor))
+                {
+                    indexSelectedColor++;
+                    continue;
+                }
 
-                index++;
+                //Considering the conbinations of avaiables keys
+                //we only have 36 colors
+                if (indexSelectedColor >= 36)
+                    indexSelectedColor = 0;
+
+                TintSnake(indexSelectedColor);
+                indexSelectedColor++;
 
                 yield return wait;
             }
         }
 
-        private void TintSnake()
-        {
-            for (int i = 0; i < snakeTiles.Count; i++)
-            {
-                snakeTiles[i].TintTile(currentSelectedColor);
-            }
-        }
-
-
         public override void  SelectSnakePreset()
         {
-
             if (ChoosePresetCoroutine != null)
                 StopCoroutine(ChoosePresetCoroutine);
-
-            UsedSnakesPresets.Add(index);
-
         }
 
         #endregion

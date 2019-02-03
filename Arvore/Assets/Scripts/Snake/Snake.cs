@@ -25,7 +25,7 @@ namespace Snake
 
         protected SnakeDirection currentDirection;
 
-        int Blockseaten = 0;
+        int BlocksEaten = 0;
 
         Position snakeLastTileInfo;
 
@@ -33,6 +33,11 @@ namespace Snake
         private bool isAI = false;
 
         public bool isActive = false;
+
+        //Snakes Preset
+        [SerializeField] SnakesPresetsData snakesPresetsData;
+        protected static List<int> usedSnakesPreset = new List<int>();
+        protected int indexSelectedColor;
 
         #region GetterSetter
         public void SetSnakeAI()
@@ -203,8 +208,8 @@ namespace Snake
             if (checkResult == ArenaTileState.BLOCK)
             {
 
-                Blockseaten++;
-                Debug.Log("eat " + Blockseaten);
+                BlocksEaten++;
+                Debug.Log("eat " + BlocksEaten);
 
                 switch (blockType)
                 {
@@ -369,5 +374,34 @@ namespace Snake
 
             //Debug.Log("Rotate " + currentDirection);
         }
+
+        #region SnakePreset
+        protected void TintSnake(int index)
+        {
+            for (int i = 0; i < snakeTiles.Count; i++)
+            {
+                snakeTiles[i].TintTile(snakesPresetsData.colors[index]);
+            }
+
+            usedSnakesPreset.Add(index);
+        }
+
+        public void ResetUsedColors()
+        {
+            usedSnakesPreset = new List<int>();
+        }
+
+        protected bool IsColorIndexUsed(int indexColor)
+        {
+            for (int i = 0; i < usedSnakesPreset.Count; i++)
+            {
+                if (usedSnakesPreset[i] == indexColor)
+                    return true;
+            }
+
+            return false;
+        }
+
+        #endregion
     }
 }

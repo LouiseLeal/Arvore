@@ -1,21 +1,22 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-
-
-namespace Snake {
+namespace Snake
+{
 
     public class SnakeAI : Snake
     {
-       
+
         public override void CreateSnake(int initialTileCount, int arenaHeight, Vector2 TileSize, float speed)
         {
             Debug.Log("Create an snake AI");
 
             base.CreateSnake(initialTileCount, arenaHeight, TileSize, speed);
             SetSnakeAI();
+            ColorSnake();
             isActive = true;
         }
+
+
 
         protected override void Update()
         {
@@ -38,9 +39,10 @@ namespace Snake {
         }
 
 
+        #region SnakeAILogic
         void ChangeDirection()
         {
-           
+
             var position = new Position();
             position.x = snakeTiles[0].x;
             position.y = snakeTiles[0].y;
@@ -49,14 +51,14 @@ namespace Snake {
 
             if (!HorizontalyDirection(position, targetPosition))
             {
-                if(!VerticalyDirection(position, targetPosition))
+                if (!VerticalyDirection(position, targetPosition))
                 {
                     if (currentDirection == SnakeDirection.INVALID)
                         Debug.Log("Inavlid");
                     else
-                    //The snakes head is on top of target this will be 
-                     //dealed with in follow methods;
-                     return;
+                        //The snakes head is on top of target this will be 
+                        //dealed with in follow methods;
+                        return;
 
                 }
             }
@@ -100,7 +102,7 @@ namespace Snake {
                                       currentDirection == SnakeDirection.LEFT)
                     {
                         currentDirection = SnakeDirection.UP;
-                         return true;
+                        return true;
                     }
 
                     var auxDirection = TurnHorizontaly(position);
@@ -132,7 +134,7 @@ namespace Snake {
                                         currentDirection == SnakeDirection.DOWN)
                     {
                         currentDirection = SnakeDirection.LEFT;
-                        return true; 
+                        return true;
                     }
 
                     var auxDirection = TurnVerticaly(position);
@@ -174,7 +176,7 @@ namespace Snake {
                 else if (GameManager.Instance.IsEmptyArenaTile(position.x + 1, position.y))
                 {
                     //Continue in the same direction
-                    return true; 
+                    return true;
                 }
             }
             return false;
@@ -211,8 +213,44 @@ namespace Snake {
 
             return SnakeDirection.INVALID;
         }
+        #endregion
 
+        #region SnakePreset
 
+        private void ColorSnake()
+        {
+            var indexColor = Random.Range(0, 35);
+
+            if (!IsColorIndexUsed(indexColor))
+            {
+                //The max colors is 26 because of the max 
+                //combinations  keys
+                
+                for (int i = indexColor+1; i < 36; i++)
+                {
+                    if (IsColorIndexUsed(i))
+                    {
+                        indexSelectedColor = i;
+                        TintSnake(indexSelectedColor);
+                        return;
+                    }
+                }
+                for (int i = 0; i < indexColor; i++)
+                {
+                    if (IsColorIndexUsed(i))
+                    {
+                        indexSelectedColor = i;
+                        TintSnake(indexSelectedColor);
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                indexSelectedColor = indexColor;
+                TintSnake(indexSelectedColor);
+            }
+        }
+        #endregion
     }
-
 }
