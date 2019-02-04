@@ -74,8 +74,13 @@ namespace Snake
                     if (currentDirection == SnakeDirection.RIGHT ||
                                       currentDirection == SnakeDirection.LEFT)
                     {
-                        currentDirection = SnakeDirection.DOWN;
-                        return true;
+                        //Check for bellow tile
+                        if (GameManager.Instance.
+                                IsEmptyArenaTile(position.x, (position.y + 1)))
+                        {
+                            currentDirection = SnakeDirection.DOWN;
+                            return true;
+                        }
                     }
 
                     var auxDirection = TurnHorizontaly(position);
@@ -100,8 +105,14 @@ namespace Snake
                     if (currentDirection == SnakeDirection.RIGHT ||
                                       currentDirection == SnakeDirection.LEFT)
                     {
-                        currentDirection = SnakeDirection.UP;
-                        return true;
+
+                        //Check for bellow tile
+                        if (GameManager.Instance.
+                                IsEmptyArenaTile(position.x, (position.y - 1)))
+                        {
+                            currentDirection = SnakeDirection.UP;
+                            return true;
+                        }
                     }
 
                     var auxDirection = TurnHorizontaly(position);
@@ -132,8 +143,13 @@ namespace Snake
                     if (currentDirection == SnakeDirection.UP ||
                                         currentDirection == SnakeDirection.DOWN)
                     {
-                        currentDirection = SnakeDirection.LEFT;
-                        return true;
+                        //Check for bellow tile
+                        if (GameManager.Instance.
+                                IsEmptyArenaTile((position.x - 1), position.y))
+                        {
+                            currentDirection = SnakeDirection.LEFT;
+                            return true;
+                        }
                     }
 
                     var auxDirection = TurnVerticaly(position);
@@ -159,8 +175,14 @@ namespace Snake
                     if (currentDirection == SnakeDirection.UP ||
                                        currentDirection == SnakeDirection.DOWN)
                     {
-                        currentDirection = SnakeDirection.RIGHT;
-                        return true;
+                        //Check for bellow tile
+                        if (GameManager.Instance.
+                                IsEmptyArenaTile((position.x + 1), position.y))
+                        {
+                            currentDirection = SnakeDirection.RIGHT;
+                            return true;
+                        }
+
                     }
 
                     var auxDirection = TurnVerticaly(position);
@@ -212,6 +234,7 @@ namespace Snake
 
             return SnakeDirection.INVALID;
         }
+
         #endregion
 
         #region SnakePreset
