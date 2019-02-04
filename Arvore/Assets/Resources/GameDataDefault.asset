@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68d9f172b93424929b24af2d93840bd7, type: 3}
   m_Name: GameDataDefault
   m_EditorClassIdentifier: 
-  grayBlock: 0
+  grayBlock: 1
   greenBlock: 0
-  redBlock: 1
+  redBlock: 0
   blueBlock: 0
   speedIncrease: 1
   rangeConnon: 5
   cannonThreshold: 0.01
-  cannonSpeed: 0.5
+  cannonSpeed: 1
   tileSize: 24.133333
   arenaHeight: 15
   arenaWidth: 20

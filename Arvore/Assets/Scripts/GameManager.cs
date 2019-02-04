@@ -98,6 +98,12 @@ namespace Snake
 
         }
 
+        public bool HasAnySnake()
+        {
+            return snakes.Count > 0;
+        }
+
+
         public void StartGame()
         {
 

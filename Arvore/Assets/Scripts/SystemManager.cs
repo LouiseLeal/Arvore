@@ -94,11 +94,12 @@ namespace Snake
 
             //Todo see if this can be simplified
             defineSnakes.changeStateButton.onClick.AddListener(() => {
-
-                ChangeState(GameState.GAME);
-                defineSnakes.Enable(false);
-                defineSnakes.changeStateButton.onClick.RemoveAllListeners();
-
+                if (GameManager.Instance.HasAnySnake())
+                {
+                    ChangeState(GameState.GAME);
+                    defineSnakes.Enable(false);
+                    defineSnakes.changeStateButton.onClick.RemoveAllListeners();
+                }
             });
 
         }
