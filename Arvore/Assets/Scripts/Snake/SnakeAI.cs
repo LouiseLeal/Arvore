@@ -219,9 +219,10 @@ namespace Snake
 
         private void ColorSnake()
         {
+            indexSelectedColor = -1;
             var indexColor = Random.Range(0, 35);
 
-            if (!IsColorIndexUsed(indexColor))
+            if (IsColorIndexUsed(indexColor))
             {
                 //The max colors is 26 because of the max 
                 //combinations  keys
@@ -231,25 +232,29 @@ namespace Snake
                     if (IsColorIndexUsed(i))
                     {
                         indexSelectedColor = i;
-                        TintSnake(indexSelectedColor);
-                        return;
+                        break;
                     }
                 }
-                for (int i = 0; i < indexColor; i++)
+
+                if (indexSelectedColor == -1)
                 {
-                    if (IsColorIndexUsed(i))
+                    for (int i = 0; i < indexColor; i++)
                     {
-                        indexSelectedColor = i;
-                        TintSnake(indexSelectedColor);
-                        return;
+                        if (IsColorIndexUsed(i))
+                        {
+                            indexSelectedColor = i;
+                            break;
+                        }
                     }
                 }
             }
             else
             {
                 indexSelectedColor = indexColor;
-                TintSnake(indexSelectedColor);
             }
+
+            TintSnake(indexSelectedColor);
+            usedSnakesPreset.Add(indexSelectedColor);
         }
         #endregion
     }

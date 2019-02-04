@@ -175,7 +175,7 @@ namespace Snake
                 CreateAISnake();
             }
 
-            snakes[0].ResetUsedColors();
+            Snake.ResetUsedColors();
         }
 
         #region GameSetting
@@ -461,7 +461,7 @@ namespace Snake
         void SetGameOver(Snake snake)
         {
             SystemManager.Instance.GameOver(snake);
-            snake.isActive = false;
+            snake.SetActive(false);
 
             blocksManager.ResetBlocks();
             ResetArena();

@@ -30,9 +30,9 @@ namespace Snake
         Position snakeLastTileInfo;
 
         LastSnakeMoviment lastMoviment;
-        private bool isAI = false;
+        protected bool isAI = false;
 
-        public bool isActive = false;
+        protected bool isActive = false;
 
         //Snakes Preset
         [SerializeField] SnakesPresetsData snakesPresetsData;
@@ -108,7 +108,7 @@ namespace Snake
             currentSize = initialTileCount;
 
             newSnakeTile.SetValidSnakeTile(snakeTilePosition, TileSize, true);
-
+            GameManager.Instance.SetArenaTileState(snakeTilePosition.x, snakeTilePosition.y, ArenaTileState.SNAKE);
             snakeTiles.Add(newSnakeTile);
 
             for (int i = 1; i < initialTileCount; i++)
@@ -255,6 +255,7 @@ namespace Snake
                 newSnakeTile.SetValidSnakeTile(position,
                                                GameManager.Instance.tileSize, false);
 
+                newSnakeTile.TintTile(snakesPresetsData.colors[indexSelectedColor]);
                 snakeTiles.Add(newSnakeTile);
             }
 
@@ -382,11 +383,9 @@ namespace Snake
             {
                 snakeTiles[i].TintTile(snakesPresetsData.colors[index]);
             }
-
-            usedSnakesPreset.Add(index);
         }
 
-        public void ResetUsedColors()
+        public static void ResetUsedColors()
         {
             usedSnakesPreset = new List<int>();
         }

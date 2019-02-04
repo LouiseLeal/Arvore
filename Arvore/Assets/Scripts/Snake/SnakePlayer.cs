@@ -103,6 +103,8 @@ namespace Snake
 
         public override void  SelectSnakePreset()
         {
+            usedSnakesPreset.Add(indexSelectedColor);
+
             if (ChoosePresetCoroutine != null)
                 StopCoroutine(ChoosePresetCoroutine);
         }

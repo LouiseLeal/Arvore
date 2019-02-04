@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7620646066862999757}
   - component: {fileID: 1513933264170169708}
   m_Layer: 5
-  m_Name: SnakeAI
+  m_Name: SnakeAIPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,5 +50,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   snakeTilePrefab: {fileID: 8351478874775052159, guid: 433dbf3adba7d4a8980a1725307b8e96,
     type: 3}
-  isActive: 0
   snakesPresetsData: {fileID: 11400000, guid: 1aa8106e7cb53417da6fb6de20bc690e, type: 2}
