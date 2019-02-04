@@ -129,7 +129,6 @@ namespace Snake
 
         protected void CheckForMove()
         {
-
             if (!Move())
             {
                 GameManager.Instance.SnakeDie(this);
@@ -191,8 +190,10 @@ namespace Snake
 
         protected void StoreLastMoviment()
         {
-            if (snakeTiles == null)
+
+            if (snakeTiles != null)
             {
+                Debug.Log("StoreLastMoviment " + name);
                 lastMoviment.lastDirection = currentDirection;
                 //lastMoviment.snakeHeadPosiiton = snake[0].GetPosition(0);
                 lastMoviment.snakeTailPosition = snakeTiles[currentSize - 1].GetPosition(0);

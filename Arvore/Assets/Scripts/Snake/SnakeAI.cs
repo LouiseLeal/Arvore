@@ -33,7 +33,6 @@ namespace Snake
 
         public override bool Move()
         {
-
             ChangeDirection();
             return base.Move();
         }
